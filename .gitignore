@@ -1,0 +1,28 @@
+# dependencies
+node_modules
+.pnp
+.pnp.js
+
+# env (keep keys out of repo)
+.env
+.env.local
+.env*.local
+
+# next
+.next
+out
+
+# misc
+.DS_Store
+*.pem
+debug.log
+npm-debug.log*
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# TypeScript
+next-env.d.ts
