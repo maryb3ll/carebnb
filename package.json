@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed:stanford": "node scripts/generate-stanford-seed.js"
+    "seed:stanford": "node scripts/generate-stanford-seed.js",
+    "build:front": "cd \"front end\" && npm run build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",

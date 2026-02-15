@@ -40,11 +40,11 @@ const ProviderModal = ({ provider, onClose, onBook }) => {
         </button>
 
         <div className="overflow-y-auto max-h-[90vh]">
-          <div className="aspect-[16/9] md:aspect-[21/9] overflow-hidden">
+          <div className="aspect-[16/9] md:aspect-[21/9] overflow-hidden bg-stone-100">
             <Image
               src={provider?.image}
               alt={provider?.imageAlt}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
           </div>
 
@@ -57,14 +57,14 @@ const ProviderModal = ({ provider, onClose, onBook }) => {
                 <p className="text-base md:text-lg text-muted-foreground mb-3">
                   {provider?.specialty}
                 </p>
-                <div className="flex items-center gap-4 text-sm md:text-base">
-                  <div className="flex items-center gap-1">
-                    <Icon name="Star" size={18} color="var(--color-primary)" fill="var(--color-primary)" strokeWidth={0} />
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm md:text-base">
+                  <div className="flex items-center gap-1.5">
+                    <Icon name="Star" size={18} color="var(--color-primary)" fill="var(--color-primary)" strokeWidth={0} className="shrink-0" />
                     <span className="font-medium text-foreground">{provider?.rating}</span>
                     <span className="text-muted-foreground">({provider?.reviews} reviews)</span>
                   </div>
-                  <div className="flex items-center gap-1 text-muted-foreground">
-                    <Icon name="MapPin" size={16} strokeWidth={2} />
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <Icon name="MapPin" size={16} strokeWidth={2} className="shrink-0" />
                     <span>{provider?.distance} miles away</span>
                   </div>
                 </div>
@@ -90,30 +90,31 @@ const ProviderModal = ({ provider, onClose, onBook }) => {
               </p>
             </div>
 
-            <div className="mb-8">
-              <h3 className="text-lg md:text-xl font-semibold text-foreground mb-4">
+            <div className="mb-8 w-full">
+              <h3 className="text-lg md:text-xl font-semibold text-foreground mb-4 text-left">
                 Select Date
               </h3>
-              <div className="flex gap-2 overflow-x-auto pb-2 smooth-scroll">
+              <div className="flex gap-2 overflow-x-auto pb-2 smooth-scroll w-full min-w-0">
                 {availableDates?.map((dateObj) => (
                   <button
                     key={dateObj?.date}
                     onClick={() => setSelectedDate(dateObj?.date)}
-                    className={`flex-shrink-0 flex flex-col items-center justify-center w-16 md:w-20 h-20 md:h-24 rounded-xl border-2 transition-all duration-250 ${
+                    type="button"
+                    className={`flex-shrink-0 flex flex-col items-center justify-center w-16 md:w-20 min-h-[5rem] md:min-h-[6rem] rounded-xl border-2 transition-all duration-250 py-2 ${
                       selectedDate === dateObj?.date
-                        ? 'border-primary bg-primary/5' :'border-border hover:border-primary/50'
+                        ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'
                     }`}
                   >
-                    <span className="text-xs text-muted-foreground mb-1">{dateObj?.day}</span>
-                    <span className="text-lg md:text-xl font-semibold text-foreground">{dateObj?.dayNum}</span>
+                    <span className="text-xs text-muted-foreground leading-tight block w-full text-center">{dateObj?.day}</span>
+                    <span className="text-lg md:text-xl font-semibold text-foreground leading-tight block w-full text-center mt-1">{dateObj?.dayNum}</span>
                   </button>
                 ))}
               </div>
             </div>
 
             {selectedDate && (
-              <div className="mb-8">
-                <h3 className="text-lg md:text-xl font-semibold text-foreground mb-4">
+              <div className="mb-8 w-full">
+                <h3 className="text-lg md:text-xl font-semibold text-foreground mb-4 text-left">
                   Select Time
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

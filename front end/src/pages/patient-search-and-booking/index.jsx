@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../../components/ui/Header';
 import SearchBar from './components/SearchBar';
 import ProviderCard from './components/ProviderCard';
@@ -8,12 +9,76 @@ import RequestStatus from './components/RequestStatus';
 import NotificationsList from './components/NotificationsList';
 import Icon from '../../components/AppIcon';
 import { providersData } from '../../data/providers';
+import { getProviders } from '../../api/carebnb';
+import { filterProvidersByCareType, rankProviders } from './searchUtils';
+
+const SPECIALIST_OPTIONS = [
+  'Family medicine doctor',
+  'Internal medicine doctor',
+  'Pediatrician',
+  'Obstetrician and Gynecologist',
+  'Gynecologist',
+  'Minimally invasive gynecologic surgeon',
+  'Nurse Practitioner',
+  'Urogynecologist',
+  'Geriatrician',
+  'Nurse Practitioner & Lactation Consultant',
+  'Pediatric/adolescent gynecologist',
+  'Physical Therapist',
+  'Registered Nurse',
+  'Senior Physical Therapist'
+];
 
 const PatientSearchAndBooking = () => {
+  const navigate = useNavigate();
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [showBookingPanel, setShowBookingPanel] = useState(false);
   const [filteredProviders, setFilteredProviders] = useState([]);
+  const [totalProviderCount, setTotalProviderCount] = useState(null);
+  const [usedNameFilter, setUsedNameFilter] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [useApi, setUseApi] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [userLocation, setUserLocation] = useState({ lat: 37.44, lng: -122.17 });
+  const [filterPanelOpen, setFilterPanelOpen] = useState(false);
+  const [selectedSpecialist, setSelectedSpecialist] = useState(null);
+  const filterRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (filterRef?.current && !filterRef.current.contains(e.target)) {
+        setFilterPanelOpen(false);
+      }
+    };
+    const t = setTimeout(() => {
+      document.addEventListener('click', handleClickOutside);
+    }, 0);
+    return () => {
+      clearTimeout(t);
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      () => {}
+    );
+  }, []);
+
+  useEffect(() => {
+    if (!useApi) return;
+    setLoading(true);
+    getProviders({ service: 'nursing', lat: userLocation.lat, lng: userLocation.lng })
+      .then(({ list, total }) => {
+        setFilteredProviders(list);
+        setTotalProviderCount(total);
+        setHasSearched(true);
+      })
+      .catch(() => setUseApi(false))
+      .finally(() => setLoading(false));
+  }, [useApi, userLocation.lat, userLocation.lng]);
 
   const mockRequests = [
   {
@@ -83,60 +148,57 @@ const PatientSearchAndBooking = () => {
   }];
 
 
-  const handleSearch = (searchParams) => {
-    console.log('Search params:', searchParams);
-
-    // Filter providers based on search criteria
-    let results = [...providersData];
-
-    // Filter by location (where) - simple distance-based filtering
+  const getFallbackResults = (searchParams) => {
+    let results = [...(providersData || [])];
     if (searchParams?.where?.trim()) {
-      // In a real app, this would use geolocation API
-      // For now, we'll filter by distance if location is provided
-      results = results?.filter((provider) => provider?.distance <= 5);
+      results = results.filter((provider) => (provider?.distance ?? 99) <= 5);
     }
-
-    // Filter by time (check if provider is available)
     if (searchParams?.time) {
       const requestedDate = new Date(searchParams.time);
       const today = new Date();
-
-      // Filter based on availability
-      results = results?.filter((provider) => {
+      results = results.filter((provider) => {
         if (requestedDate?.toDateString() === today?.toDateString()) {
           return provider?.available === true;
         }
-        return true; // Future dates might have availability
+        return true;
       });
     }
-
-    // Filter by care type (match against specialty)
-    if (searchParams?.careType) {
-      const careTypeMap = {
-        'common': ['Nurse', 'Primary Care', 'Registered Nurse'],
-        'clinical': ['IV Therapy', 'Nurse Practitioner', 'Licensed Practical Nurse'],
-        'post-hospital': ['Nurse Practitioner', 'Registered Nurse', 'Primary Care'],
-        'support': ['Physical Therapist', 'Lactation Consultant', 'Palliative Care']
-      };
-
-      const keywords = careTypeMap?.[searchParams?.careType] || [];
-      results = results?.filter((provider) =>
-      keywords?.some((keyword) =>
-      provider?.specialty?.toLowerCase()?.includes(keyword?.toLowerCase())
-      )
-      );
-    }
-
-    // Filter by provider name
+    results = filterProvidersByCareType(results, searchParams?.careType);
     if (searchParams?.name?.trim()) {
-      const searchName = searchParams?.name?.toLowerCase();
-      results = results?.filter((provider) =>
-      provider?.name?.toLowerCase()?.includes(searchName)
+      const searchName = searchParams.name.toLowerCase();
+      results = results.filter((provider) =>
+        provider?.name?.toLowerCase()?.includes(searchName)
       );
     }
+    return results;
+  };
 
-    setFilteredProviders(results);
-    setHasSearched(true);
+  const handleSearch = async (searchParams) => {
+    setLoading(true);
+    let results = [];
+    try {
+      if (useApi) {
+        const service = 'nursing';
+        const when = searchParams?.time || null;
+        const { list } = await getProviders({ service, lat: userLocation.lat, lng: userLocation.lng, when, limit: 50 });
+        results = filterProvidersByCareType(list || [], searchParams?.careType);
+        if (searchParams?.name?.trim()) {
+          const q = searchParams.name.toLowerCase();
+          results = results.filter((p) => p.name?.toLowerCase().includes(q));
+        }
+      } else {
+        results = getFallbackResults(searchParams);
+      }
+    } catch {
+      setUseApi(false);
+      results = getFallbackResults(searchParams);
+    } finally {
+      setLoading(false);
+    }
+    const ranked = rankProviders(results, searchParams);
+    navigate('/patient-search-and-booking/results', {
+      state: { providers: ranked, searchParams, userLocation, _fromSearch: true }
+    });
   };
 
   const handleProviderClick = (provider) => {
@@ -161,26 +223,77 @@ const PatientSearchAndBooking = () => {
     console.log('View alternatives for request:', requestId);
   };
 
+  const matchesSpecialist = (provider, specialistLabel) => {
+    if (!specialistLabel) return true;
+    const s = specialistLabel.toLowerCase();
+    const specialty = (provider?.specialty || '').toLowerCase();
+    const credentials = Array.isArray(provider?.credentials) ? provider.credentials : [];
+    const credsStr = credentials.join(' ').toLowerCase();
+    return specialty.includes(s) || credsStr.includes(s) || s.includes(specialty);
+  };
+
+  const displayProviders = selectedSpecialist
+    ? (filteredProviders || []).filter((p) => matchesSpecialist(p, selectedSpecialist))
+    : (filteredProviders || []);
+  const displayCount = hasSearched
+    ? (selectedSpecialist || usedNameFilter || totalProviderCount == null ? (displayProviders?.length ?? 0) : totalProviderCount)
+    : 0;
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="pt-20">
+      <main className="main-content-pt w-full min-w-0">
         <SearchBar onSearch={handleSearch} />
 
-        <div className="w-full px-4 md:px-6 lg:px-8 py-6 md:py-8">
-          <div className="max-w-[1440px] mx-auto">
-            <div className="flex items-center justify-between mb-6">
+        <div className="w-full min-w-0 px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <div className="w-full min-w-0 max-w-[1440px] mx-auto">
+            <div className="flex items-center justify-between mb-6 relative" ref={filterRef}>
               <h2 className="text-2xl md:text-3xl font-semibold text-foreground">
-                {hasSearched ? `${filteredProviders?.length} Provider${filteredProviders?.length !== 1 ? 's' : ''} found` : 'Providers near you'}
+                {loading ? 'Loading…' : hasSearched ? `${displayCount} Provider${displayCount !== 1 ? 's' : ''} found` : 'Providers near you'}
               </h2>
-              <button className="flex items-center gap-2 px-4 py-2 text-sm md:text-base text-foreground hover:text-primary transition-colors duration-250">
+              <button
+                type="button"
+                id="patient-filter-by-specialist-btn"
+                aria-expanded={filterPanelOpen}
+                aria-haspopup="listbox"
+                onClick={() => setFilterPanelOpen((o) => !o)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm md:text-base transition-colors duration-250 ${filterPanelOpen ? 'bg-stone-100 text-primary' : 'text-foreground hover:text-primary'}`}
+              >
                 <Icon name="SlidersHorizontal" size={20} strokeWidth={2} />
                 <span className="hidden sm:inline">Filters</span>
+                {selectedSpecialist && <span className="ml-1 rounded-full bg-primary/20 px-1.5 py-0.5 text-xs font-medium text-primary">1</span>}
               </button>
+
+              {filterPanelOpen && (
+                <div className="absolute right-0 top-full mt-2 w-full max-w-sm bg-white rounded-xl shadow-lg border-2 border-primary/30 z-[200] overflow-hidden" role="listbox" aria-label="Filter by specialist">
+                  <div className="px-4 py-3 border-b border-stone-100">
+                    <h3 className="font-semibold text-foreground">Filter by specialist</h3>
+                  </div>
+                  <div className="max-h-[320px] overflow-y-auto py-2">
+                    <button
+                      type="button"
+                      onClick={() => { setSelectedSpecialist(null); setFilterPanelOpen(false); }}
+                      className={`w-full text-left px-4 py-2.5 text-sm ${!selectedSpecialist ? 'bg-primary/10 text-primary font-medium' : 'text-foreground hover:bg-stone-50'}`}
+                    >
+                      All specialists
+                    </button>
+                    {SPECIALIST_OPTIONS.map((label) => (
+                      <button
+                        key={label}
+                        type="button"
+                        onClick={() => { setSelectedSpecialist(selectedSpecialist === label ? null : label); setFilterPanelOpen(false); }}
+                        className={`w-full text-left px-4 py-2.5 text-sm ${selectedSpecialist === label ? 'bg-primary/10 text-primary font-medium' : 'text-foreground hover:bg-stone-50'}`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="flex gap-4 overflow-x-auto pb-4 smooth-scroll">
-              {(hasSearched ? filteredProviders : providersData)?.map((provider) =>
+              {(hasSearched ? displayProviders : providersData)?.map((provider) =>
               <ProviderCard
                 key={provider?.id}
                 provider={provider}
@@ -189,7 +302,7 @@ const PatientSearchAndBooking = () => {
               )}
             </div>
             
-            {hasSearched && filteredProviders?.length === 0 &&
+            {hasSearched && displayProviders?.length === 0 &&
             <div className="text-center py-12">
                 <Icon name="SearchX" size={48} strokeWidth={1.5} className="mx-auto text-muted-foreground mb-4" />
                 <h3 className="text-xl font-semibold text-foreground mb-2">No providers found</h3>

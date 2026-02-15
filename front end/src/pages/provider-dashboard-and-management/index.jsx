@@ -129,7 +129,7 @@ const ProviderDashboardAndManagement = () => {
       <div className="min-h-screen bg-background">
         <Header />
         
-        <main className="pt-20 md:pt-24">
+        <main className="main-content-pt w-full min-w-0">
           <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12 py-6 md:py-8 lg:py-12">
             
             {/* Dashboard Stats */}

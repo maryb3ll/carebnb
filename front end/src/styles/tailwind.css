@@ -8,7 +8,21 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    width: 100%;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+  /* Header vars: MUST match Next.js app/globals.css exactly so menu bar is same on / and all SPA pages */
   :root {
+    --header-bar-height: 52px;
+    --header-logo-height: clamp(48px, 10vw, 120px);
+    --content-pt: clamp(80px, 12vw, 120px);
     --color-primary: #FF385C; /* pink-500 */
     --color-primary-foreground: #FFFFFF; /* white */
     --color-secondary: #2D3748; /* gray-800 */
@@ -130,79 +144,76 @@
 
 @layer components {
   .header-container {
-    @apply fixed top-0 left-0 right-0 z-[100] bg-card shadow-md;
-    height: 88px;
-    transition: all 250ms ease-out;
+    @apply fixed top-0 left-0 right-0 z-[100] bg-white border-b border-stone-100 flex items-center overflow-visible w-full min-w-0;
+    min-height: var(--header-bar-height);
+    height: var(--header-bar-height);
   }
-.header-content  {
-    @apply flex items-center justify-between px-10 lg:px-20 max-w-[1440px] mx-auto;
-    height: 88px;
+  .header-content {
+    @apply flex items-center justify-between w-full min-w-0 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 gap-3;
+    min-height: var(--header-bar-height);
+    height: 100%;
   }
 
   .header-brand {
-    @apply flex items-center gap-4 cursor-pointer;
+    @apply flex items-center cursor-pointer shrink-0 min-w-0;
   }
   .header-logo {
-    @apply w-44 h-44 flex items-center justify-center rounded-xl transition-all duration-250 overflow-hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    flex-shrink: 0;
+    height: var(--header-logo-height);
   }
-  .header-logo:hover {
-    @apply scale-105;
-  }
-
-  .header-title {
-    @apply text-xl font-semibold text-foreground;
-    font-family: 'Source Serif Pro', Georgia, serif;
+  .header-logo img {
+    height: var(--header-logo-height) !important;
+    width: auto !important;
+    max-height: 120px !important;
+    object-fit: contain;
+    object-position: left;
   }
 
   .header-nav {
-    @apply flex items-center gap-8;
+    @apply flex items-center gap-2;
   }
-  .role-toggle  {
-    @apply flex items-center gap-3 px-6 py-3 rounded-xl bg-muted transition-all duration-250 cursor-pointer;
-  }
-
-  .role-toggle:hover {
-    @apply shadow-sm;
-    transform: translateY(-1px);
-  }
-
-  .role-toggle:active {
-    transform: scale(0.97);
+  .role-toggle {
+    @apply flex items-center gap-2 px-3 py-2.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 hover:text-stone-900 transition-colors cursor-pointer shrink-0;
   }
 
   .role-toggle-icon {
-    @apply w-5 h-5 text-primary;
+    @apply w-4 h-4 text-primary shrink-0;
   }
 
   .role-toggle-text {
-    @apply text-sm font-medium text-foreground;
-    font-family: 'Inter', sans-serif;
+    @apply text-sm font-medium;
   }
 
   @media (max-width: 768px) {
+    :root {
+      --header-bar-height: 48px;
+      --header-logo-height: clamp(40px, 12vw, 96px);
+      --content-pt: clamp(72px, 14vw, 96px);
+    }
     .header-content {
-      @apply px-4 h-20;
+      @apply px-3 gap-3;
     }
-
-    .header-logo {
-      @apply w-16 h-16;
+    .header-logo img {
+      height: var(--header-logo-height) !important;
+      max-height: 96px !important;
     }
-
-    .header-title {
-      @apply text-lg;
-    }
-
     .header-nav {
-      @apply gap-4;
+      @apply gap-1.5;
     }
-
     .role-toggle {
-      @apply px-4 py-2 gap-2;
+      @apply px-2.5 py-1.5 gap-1.5;
     }
-
     .role-toggle-text {
       @apply text-xs;
     }
+  }
+
+  .main-content-pt {
+    padding-top: var(--content-pt);
   }
 }
 

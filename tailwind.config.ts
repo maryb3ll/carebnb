@@ -12,6 +12,10 @@ const config: Config = {
         sans: ["system-ui", "sans-serif"],
       },
       colors: {
+        primary: {
+          DEFAULT: "#FF385C",
+          foreground: "#FFFFFF",
+        },
         brand: {
           50: "#f0fdf7",
           100: "#dcfceb",

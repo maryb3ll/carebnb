@@ -53,11 +53,17 @@ A full-stack care marketplace that connects **patients** with **care providers**
 
 | Layer        | Technology                          |
 |-------------|-------------------------------------|
-| Frontend    | Next.js 14 (App Router), React 18, Tailwind CSS |
-| Backend     | Next.js API routes                  |
+| Frontend    | React (Vite) app in `front end/`, served by Next.js at `/`; legacy Next.js pages in `app/_legacy/` |
+| Backend     | Next.js API routes (`/api/*`), Supabase, PostGIS |
 | Database    | Supabase (PostgreSQL)               |
 | Geo         | PostGIS (geography points, distance queries)     |
 | Auth        | Supabase Auth (email/password)      |
+
+### Combined setup (front end + backend)
+
+- **UI**: The React/Vite app in **`front end/`** is built to **`public/spa/`** and served for all non-API routes (patient search, provider dashboard, etc.).
+- **API**: Next.js serves **`/api/*`** (providers, bookings, auth, care requests). The front end calls these when running from the same origin.
+- **Build**: From project root run **`npm run build:front`** (or `cd "front end" && npm run build`), then **`npm run build`** for Next.js. **`npm run dev`** runs Next.js only; the SPA is served from the built files in `public/spa/`.
 
 ---
 
@@ -109,7 +115,10 @@ In the Supabase **SQL Editor**:
    - `user_id` on `patients` and `providers` (FK to `auth.users`)
    - Intake fields on `bookings`: `patient_name`, `patient_phone`, `address_notes`, `consent`
 
-4. **Verify**  
+4. **Run the provider count migration** (for “X providers found” to use DB total)  
+   In **Supabase Dashboard → SQL Editor**, paste and run the contents of `supabase/migrations/003_match_providers_total_count.sql`. This updates `match_providers` to return a `total_count` so the patient search shows the real number of matching providers.
+
+5. **Verify**  
    In **Table Editor**, confirm the four tables exist. Under **Database → Functions**, confirm `match_providers` and `match_requests`.
 
 Detailed checklist: **supabase/README.md**.
@@ -133,11 +142,11 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_public_key
 
 ## Running the app
 
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000).
+1. **Build the front end** (once, or after changing `front end/`):  
+   `npm run build:front`
+2. **Start the server**:  
+   `npm run dev`
+3. Open [http://localhost:3000](http://localhost:3000). The React SPA (patient search, provider dashboard) is served at `/`; backend APIs at `/api/*`.
 
 - **Build for production:** `npm run build`
 - **Start production server:** `npm run start`

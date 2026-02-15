@@ -13,6 +13,7 @@ export type MatchProviderRow = {
   next_available: string | null;
   photo_url: string | null;
   distance_km: number;
+  total_count?: number;
 };
 
 export async function GET(request: NextRequest) {
@@ -66,11 +67,13 @@ export async function GET(request: NextRequest) {
     }
 
     const list = (data ?? []) as MatchProviderRow[];
+    const total = list.length > 0 && list[0].total_count != null ? list[0].total_count : list.length;
     return NextResponse.json({
-      providers: list.map((p) => ({
+      providers: list.map(({ total_count: _tc, ...p }) => ({
         ...p,
         nextAvailable: p.next_available,
       })),
+      total,
     });
   } catch (err) {
     console.error("match_providers error:", err);

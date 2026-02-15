@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Address with Autofill & Current Location</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 480px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .field-group {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.35rem;
+      color: #333;
+    }
+    .input-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: stretch;
+    }
+    .input-wrapper {
+      flex: 1;
+      position: relative;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input[type="text"]:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+    .location-btn {
+      flex-shrink: 0;
+      padding: 0.6rem 0.75rem;
+      font-size: 1rem;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+    .location-btn:hover {
+      background: #1d4ed8;
+    }
+    .location-btn:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+    .location-btn svg {
+      width: 1.1em;
+      height: 1.1em;
+    }
+    .autocomplete-list {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      margin-top: 2px;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-height: 240px;
+      overflow-y: auto;
+      z-index: 100;
+      list-style: none;
+      padding: 0;
+      margin-bottom: 0;
+    }
+    .autocomplete-list li {
+      padding: 0.6rem 0.75rem;
+      cursor: pointer;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.95rem;
+    }
+    .autocomplete-list li:last-child {
+      border-bottom: none;
+    }
+    .autocomplete-list li:hover,
+    .autocomplete-list li[aria-selected="true"] {
+      background: #eff6ff;
+    }
+    .autocomplete-list li strong {
+      color: #2563eb;
+    }
+    .status {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-top: 0.35rem;
+    }
+    .status.error {
+      color: #dc2626;
+    }
+    .status.success {
+      color: #16a34a;
+    }
+  </style>
+</head>
+<body>
+  <form id="address-form" autocomplete="off">
+    <div class="field-group">
+      <label for="address">Address</label>
+      <div class="input-row">
+        <div class="input-wrapper">
+          <input
+            type="text"
+            id="address"
+            name="address"
+            placeholder="Start typing an address..."
+            aria-autocomplete="list"
+            aria-controls="autocomplete-list"
+            aria-expanded="false"
+            role="combobox"
+          />
+          <ul
+            id="autocomplete-list"
+            class="autocomplete-list"
+            role="listbox"
+            hidden
+          ></ul>
+        </div>
+        <button type="button" class="location-btn" id="location-btn" title="Use current location">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+          </svg>
+          My location
+        </button>
+      </div>
+      <p id="status" class="status" aria-live="polite"></p>
+    </div>
+  </form>
+
+  <script>
+    (function () {
+      const addressInput = document.getElementById('address');
+      const listEl = document.getElementById('autocomplete-list');
+      const locationBtn = document.getElementById('location-btn');
+      const statusEl = document.getElementById('status');
+
+      let debounceTimer = null;
+      let selectedIndex = -1;
+      let suggestions = [];
+
+      // --- Autocomplete (Photon API - free, no key) ---
+      async function fetchSuggestions(query) {
+        if (!query || query.length < 3) return [];
+        const url = new URL('https://photon.komoot.io/api/');
+        url.searchParams.set('q', query);
+        url.searchParams.set('limit', '8');
+        url.searchParams.set('lang', 'en');
+        const res = await fetch(url);
+        if (!res.ok) return [];
+        const data = await res.json();
+        return (data.features || []).map((f) => {
+          const props = f.properties || {};
+          const name = props.name || '';
+          const street = props.street || '';
+          const housenumber = props.housenumber || '';
+          const city = props.city || props.locality || '';
+          const country = props.country || '';
+          const display = [street, housenumber, name, city, country].filter(Boolean).join(', ');
+          return {
+            display,
+            lat: f.geometry?.coordinates?.[1],
+            lon: f.geometry?.coordinates?.[0],
+            raw: props,
+          };
+        });
+      }
+
+      function setStatus(msg, type = '') {
+        statusEl.textContent = msg;
+        statusEl.className = 'status' + (type ? ' ' + type : '');
+      }
+
+      function showList(items) {
+        suggestions = items;
+        selectedIndex = -1;
+        listEl.innerHTML = '';
+        if (items.length === 0) {
+          listEl.hidden = true;
+          listEl.setAttribute('aria-expanded', 'false');
+          return;
+        }
+        listEl.hidden = false;
+        listEl.setAttribute('aria-expanded', 'true');
+        items.forEach((item, i) => {
+          const li = document.createElement('li');
+          li.textContent = item.display;
+          li.id = 'suggestion-' + i;
+          li.setAttribute('role', 'option');
+          li.setAttribute('aria-selected', 'false');
+          li.addEventListener('click', () => selectSuggestion(i));
+          listEl.appendChild(li);
+        });
+      }
+
+      function selectSuggestion(index) {
+        if (index < 0 || index >= suggestions.length) return;
+        const item = suggestions[index];
+        addressInput.value = item.display;
+        listEl.hidden = true;
+        listEl.setAttribute('aria-expanded', 'false');
+        setStatus('Address selected. Lat: ' + (item.lat?.toFixed(4) ?? '') + ', Lon: ' + (item.lon?.toFixed(4) ?? ''), 'success');
+        suggestions = [];
+      }
+
+      function updateSelectedItem() {
+        const options = listEl.querySelectorAll('[role="option"]');
+        options.forEach((el, i) => el.setAttribute('aria-selected', i === selectedIndex));
+        const chosen = options[selectedIndex];
+        if (chosen) chosen.scrollIntoView({ block: 'nearest' });
+      }
+
+      addressInput.addEventListener('input', () => {
+        setStatus('');
+        clearTimeout(debounceTimer);
+        const q = addressInput.value.trim();
+        if (q.length < 3) {
+          showList([]);
+          return;
+        }
+        debounceTimer = setTimeout(async () => {
+          try {
+            const items = await fetchSuggestions(q);
+            showList(items);
+          } catch (e) {
+            setStatus('Could not load suggestions.', 'error');
+            showList([]);
+          }
+        }, 250);
+      });
+
+      addressInput.addEventListener('keydown', (e) => {
+        if (listEl.hidden || suggestions.length === 0) return;
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          selectedIndex = Math.min(selectedIndex + 1, suggestions.length - 1);
+          updateSelectedItem();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          selectedIndex = Math.max(selectedIndex - 1, -1);
+          updateSelectedItem();
+        } else if (e.key === 'Enter' && selectedIndex >= 0) {
+          e.preventDefault();
+          selectSuggestion(selectedIndex);
+        } else if (e.key === 'Escape') {
+          listEl.hidden = true;
+          listEl.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      addressInput.addEventListener('focus', () => {
+        if (suggestions.length > 0) {
+          listEl.hidden = false;
+          listEl.setAttribute('aria-expanded', 'true');
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!listEl.contains(e.target) && e.target !== addressInput) {
+          listEl.hidden = true;
+          listEl.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // --- Current location (Geolocation API) ---
+      locationBtn.addEventListener('click', () => {
+        if (!navigator.geolocation) {
+          setStatus('Geolocation is not supported by your browser.', 'error');
+          return;
+        }
+        setStatus('Requesting location permission…');
+        locationBtn.disabled = true;
+
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            try {
+              const url = new URL('https://photon.komoot.io/reverse');
+              url.searchParams.set('lat', lat);
+              url.searchParams.set('lon', lon);
+              url.searchParams.set('lang', 'en');
+              const res = await fetch(url);
+              const data = await res.json();
+              const f = data.features?.[0];
+              const props = f?.properties || {};
+              const name = props.name || '';
+              const street = props.street || '';
+              const housenumber = props.housenumber || '';
+              const city = props.city || props.locality || '';
+              const country = props.country || '';
+              const display = [street, housenumber, name, city, country].filter(Boolean).join(', ') || `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+              addressInput.value = display;
+              setStatus('Location found.', 'success');
+            } catch (err) {
+              addressInput.value = `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+              setStatus('Address lookup failed; coordinates used.', 'success');
+            }
+            locationBtn.disabled = false;
+          },
+          (err) => {
+            if (err.code === 1) {
+              setStatus('Location permission denied.', 'error');
+            } else if (err.code === 2) {
+              setStatus('Location unavailable.', 'error');
+            } else {
+              setStatus('Could not get location.', 'error');
+            }
+            locationBtn.disabled = false;
+          },
+          { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
+      });
+    })();
+  </script>
+</body>
+</html>

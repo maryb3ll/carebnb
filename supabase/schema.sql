@@ -104,7 +104,8 @@ RETURNS TABLE (
   price NUMERIC,
   next_available TIMESTAMPTZ,
   photo_url TEXT,
-  distance_km DOUBLE PRECISION
+  distance_km DOUBLE PRECISION,
+  total_count INTEGER
 )
 LANGUAGE plpgsql
 STABLE
@@ -122,7 +123,8 @@ BEGIN
     pr.price,
     pr.next_available,
     pr.photo_url,
-    (ST_Distance(pr.location::geography, ST_SetSRID(ST_MakePoint(p_lng, p_lat), 4326)::geography) / 1000.0)::DOUBLE PRECISION AS distance_km
+    (ST_Distance(pr.location::geography, ST_SetSRID(ST_MakePoint(p_lng, p_lat), 4326)::geography) / 1000.0)::DOUBLE PRECISION AS distance_km,
+    (COUNT(*) OVER())::INTEGER AS total_count
   FROM providers pr
   WHERE
     p_service = ANY(pr.services)
