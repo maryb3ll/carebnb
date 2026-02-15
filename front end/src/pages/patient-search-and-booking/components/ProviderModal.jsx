@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../../../lib/supabase';
+import { localDateTimeToUTC } from '../../../lib/timezone';
 import Image from '../../../components/AppImage';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
@@ -6,25 +8,117 @@ import Button from '../../../components/ui/Button';
 const ProviderModal = ({ provider, onClose, onBook }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
+  const [availableDates, setAvailableDates] = useState([]);
+  const [availableSlotsByDate, setAvailableSlotsByDate] = useState({});
+  const [loadingSlots, setLoadingSlots] = useState(false);
 
-  const availableDates = [
-    { date: '2026-02-15', day: 'Sat', dayNum: '15' },
-    { date: '2026-02-16', day: 'Sun', dayNum: '16' },
-    { date: '2026-02-17', day: 'Mon', dayNum: '17' },
-    { date: '2026-02-18', day: 'Tue', dayNum: '18' },
-    { date: '2026-02-19', day: 'Wed', dayNum: '19' },
-    { date: '2026-02-20', day: 'Thu', dayNum: '20' },
-    { date: '2026-02-21', day: 'Fri', dayNum: '21' }
-  ];
+  // Fetch available slots when provider changes
+  useEffect(() => {
+    const fetchAvailableSlots = async () => {
+      if (!provider?.id) return;
 
-  const timeSlots = [
-    '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM',
-    '02:00 PM', '03:00 PM', '04:00 PM', '05:00 PM'
-  ];
+      setLoadingSlots(true);
 
-  const handleBooking = () => {
-    if (selectedDate && selectedTime) {
-      onBook({ provider, date: selectedDate, time: selectedTime });
+      const fromDate = new Date().toISOString().split('T')[0];
+      const toDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+      try {
+        const response = await fetch(`/api/providers/${provider.id}/slots?from_date=${fromDate}&to_date=${toDate}&duration=60`);
+        const data = await response.json();
+
+        if (response.ok && data.available_slots) {
+          setAvailableSlotsByDate(data.available_slots);
+
+          // Extract dates that have availability
+          const dates = Object.keys(data.available_slots)
+            .filter(dateStr => data.available_slots[dateStr].length > 0)
+            .map(dateStr => {
+              const d = new Date(dateStr + 'T12:00:00'); // Noon to avoid timezone issues
+              return {
+                date: dateStr,
+                day: d.toLocaleDateString('en-US', { weekday: 'short' }),
+                dayNum: d.getDate().toString()
+              };
+            });
+
+          setAvailableDates(dates);
+        }
+      } catch (error) {
+        console.error('Failed to fetch available slots:', error);
+      } finally {
+        setLoadingSlots(false);
+      }
+    };
+
+    fetchAvailableSlots();
+  }, [provider?.id]);
+
+  // Get time slots for selected date
+  const timeSlotsForSelectedDate = selectedDate && availableSlotsByDate[selectedDate]
+    ? availableSlotsByDate[selectedDate].map(timeStr => {
+        const [hours, minutes] = timeStr.split(':');
+        const hour = parseInt(hours);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+        return `${displayHour}:${minutes} ${ampm}`;
+      })
+    : [];
+
+  const handleBooking = async () => {
+    if (!selectedDate || !selectedTime) return;
+
+    // Convert to UTC ISO timestamp
+    const when = localDateTimeToUTC(selectedDate, selectedTime);
+
+    try {
+      const headers = { 'Content-Type': 'application/json' };
+      if (supabase) {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.access_token) headers.Authorization = `Bearer ${session.access_token}`;
+      }
+
+      const response = await fetch('/api/bookings', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          providerId: provider.id,
+          service: 'nursing',
+          when: when,
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.status === 409) {
+        // Conflict - slot no longer available
+        alert(`This time slot is no longer available. Please select another time.${data.alternatives && data.alternatives.length > 0 ? '\n\nTry: ' + data.alternatives.join(', ') : ''}`);
+
+        // Refresh available slots
+        const fromDate = new Date().toISOString().split('T')[0];
+        const toDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+        const refreshResponse = await fetch(`/api/providers/${provider.id}/slots?from_date=${fromDate}&to_date=${toDate}&duration=60`);
+        const refreshData = await refreshResponse.json();
+        if (refreshResponse.ok) {
+          setAvailableSlotsByDate(refreshData.available_slots);
+        }
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Booking failed');
+      }
+
+      // Success - pass booking data to parent
+      onBook({
+        provider,
+        date: selectedDate,
+        time: selectedTime,
+        bookingId: data.booking?.id
+      });
+
+    } catch (error) {
+      console.error('Booking error:', error);
+      alert('Failed to create booking. Please try again.');
     }
   };
 
@@ -94,22 +188,32 @@ const ProviderModal = ({ provider, onClose, onBook }) => {
               <h3 className="text-lg md:text-xl font-semibold text-foreground mb-4 text-left">
                 Select Date
               </h3>
-              <div className="flex gap-2 overflow-x-auto pb-2 smooth-scroll w-full min-w-0">
-                {availableDates?.map((dateObj) => (
-                  <button
-                    key={dateObj?.date}
-                    onClick={() => setSelectedDate(dateObj?.date)}
-                    type="button"
-                    className={`flex-shrink-0 flex flex-col items-center justify-center w-16 md:w-20 min-h-[5rem] md:min-h-[6rem] rounded-xl border-2 transition-all duration-250 py-2 ${
-                      selectedDate === dateObj?.date
-                        ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'
-                    }`}
-                  >
-                    <span className="text-xs text-muted-foreground leading-tight block w-full text-center">{dateObj?.day}</span>
-                    <span className="text-lg md:text-xl font-semibold text-foreground leading-tight block w-full text-center mt-1">{dateObj?.dayNum}</span>
-                  </button>
-                ))}
-              </div>
+              {loadingSlots ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">Loading available dates...</p>
+                </div>
+              ) : availableDates.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">No available dates in the next 14 days</p>
+                </div>
+              ) : (
+                <div className="flex gap-2 overflow-x-auto pb-2 smooth-scroll w-full min-w-0">
+                  {availableDates?.map((dateObj) => (
+                    <button
+                      key={dateObj?.date}
+                      onClick={() => setSelectedDate(dateObj?.date)}
+                      type="button"
+                      className={`flex-shrink-0 flex flex-col items-center justify-center w-16 md:w-20 min-h-[5rem] md:min-h-[6rem] rounded-xl border-2 transition-all duration-250 py-2 ${
+                        selectedDate === dateObj?.date
+                          ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'
+                      }`}
+                    >
+                      <span className="text-xs text-muted-foreground leading-tight block w-full text-center">{dateObj?.day}</span>
+                      <span className="text-lg md:text-xl font-semibold text-foreground leading-tight block w-full text-center mt-1">{dateObj?.dayNum}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {selectedDate && (
@@ -117,20 +221,26 @@ const ProviderModal = ({ provider, onClose, onBook }) => {
                 <h3 className="text-lg md:text-xl font-semibold text-foreground mb-4 text-left">
                   Select Time
                 </h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {timeSlots?.map((time) => (
-                    <button
-                      key={time}
-                      onClick={() => setSelectedTime(time)}
-                      className={`px-4 py-3 rounded-xl border-2 text-sm md:text-base font-medium transition-all duration-250 ${
-                        selectedTime === time
-                          ? 'border-primary bg-primary/5 text-primary' :'border-border text-foreground hover:border-primary/50'
-                      }`}
-                    >
-                      {time}
-                    </button>
-                  ))}
-                </div>
+                {timeSlotsForSelectedDate.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">No available times for this date</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {timeSlotsForSelectedDate?.map((time) => (
+                      <button
+                        key={time}
+                        onClick={() => setSelectedTime(time)}
+                        className={`px-4 py-3 rounded-xl border-2 text-sm md:text-base font-medium transition-all duration-250 ${
+                          selectedTime === time
+                            ? 'border-primary bg-primary/5 text-primary' :'border-border text-foreground hover:border-primary/50'
+                        }`}
+                      >
+                        {time}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 

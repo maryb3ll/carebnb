@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import { useAuth } from "../context/AuthContext";
 import Header from "../components/ui/Header";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const { refreshRoles } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,7 +26,36 @@ export default function LoginPage() {
         setError(err.message || "Login failed.");
         return;
       }
-      navigate("/patient-search-and-booking");
+
+      // Refresh user roles to determine where to redirect
+      await refreshRoles();
+
+      // Fetch user's roles to determine redirect
+      const headers = {};
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.access_token) {
+        headers.Authorization = `Bearer ${session.access_token}`;
+      }
+
+      const response = await fetch('/api/me', { headers });
+      if (response.ok) {
+        const data = await response.json();
+
+        // Redirect based on roles
+        if (data.providerId && data.patientId) {
+          // Has both - default to provider (as per requirements)
+          navigate("/provider-dashboard-and-management");
+        } else if (data.providerId) {
+          // Provider only
+          navigate("/provider-dashboard-and-management");
+        } else if (data.patientId) {
+          // Patient only
+          navigate("/patient-search-and-booking");
+        } else {
+          // No role assigned
+          setError("Your account doesn't have any role assigned. Please contact support.");
+        }
+      }
     } catch {
       setError("Something went wrong.");
     } finally {

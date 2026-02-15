@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 
 import Button from '../../../components/ui/Button';
 
-const MiniCalendar = ({ bookedSlots, onEditAvailability }) => {
+const MiniCalendar = ({ bookedSlots, blockedSlots = [], onEditAvailability }) => {
   const [currentDate] = useState(new Date(2026, 1, 14));
-  
+
   const getDaysInMonth = (date) => {
     const year = date?.getFullYear();
     const month = date?.getMonth();
@@ -12,7 +12,7 @@ const MiniCalendar = ({ bookedSlots, onEditAvailability }) => {
     const lastDay = new Date(year, month + 1, 0);
     const daysInMonth = lastDay?.getDate();
     const startingDayOfWeek = firstDay?.getDay();
-    
+
     return { daysInMonth, startingDayOfWeek };
   };
 
@@ -23,7 +23,16 @@ const MiniCalendar = ({ bookedSlots, onEditAvailability }) => {
   const isBooked = (day) => {
     return bookedSlots?.some(slot => {
       const slotDate = new Date(slot.date);
-      return slotDate?.getDate() === day && 
+      return slotDate?.getDate() === day &&
+             slotDate?.getMonth() === currentDate?.getMonth() &&
+             slotDate?.getFullYear() === currentDate?.getFullYear();
+    });
+  };
+
+  const isBlocked = (day) => {
+    return blockedSlots?.some(slot => {
+      const slotDate = new Date(slot.date);
+      return slotDate?.getDate() === day &&
              slotDate?.getMonth() === currentDate?.getMonth() &&
              slotDate?.getFullYear() === currentDate?.getFullYear();
     });
@@ -31,7 +40,7 @@ const MiniCalendar = ({ bookedSlots, onEditAvailability }) => {
 
   const isToday = (day) => {
     const today = new Date(2026, 1, 14);
-    return day === today?.getDate() && 
+    return day === today?.getDate() &&
            currentDate?.getMonth() === today?.getMonth() &&
            currentDate?.getFullYear() === today?.getFullYear();
   };
@@ -64,8 +73,9 @@ const MiniCalendar = ({ bookedSlots, onEditAvailability }) => {
         {Array.from({ length: daysInMonth })?.map((_, index) => {
           const day = index + 1;
           const booked = isBooked(day);
+          const blocked = isBlocked(day);
           const today = isToday(day);
-          
+
           return (
             <div
               key={day}
@@ -73,8 +83,9 @@ const MiniCalendar = ({ bookedSlots, onEditAvailability }) => {
                 aspect-square flex items-center justify-center rounded-lg text-sm md:text-base
                 transition-base cursor-pointer
                 ${today ? 'bg-primary text-primary-foreground font-semibold' : ''}
-                ${booked && !today ? 'bg-accent/10 text-accent font-medium' : ''}
-                ${!booked && !today ? 'hover:bg-muted text-foreground' : ''}
+                ${blocked && !today ? 'bg-red-50 text-red-700 font-medium' : ''}
+                ${booked && !today && !blocked ? 'bg-accent/10 text-accent font-medium' : ''}
+                ${!booked && !today && !blocked ? 'hover:bg-muted text-foreground' : ''}
               `}
             >
               {day}
@@ -82,7 +93,7 @@ const MiniCalendar = ({ bookedSlots, onEditAvailability }) => {
           );
         })}
       </div>
-      <div className="flex items-center gap-4 md:gap-6 mt-4 md:mt-6 pt-4 border-t border-border">
+      <div className="flex items-center flex-wrap gap-3 md:gap-4 mt-4 md:mt-6 pt-4 border-t border-border">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 md:w-4 md:h-4 rounded bg-primary" />
           <span className="text-xs md:text-sm text-muted-foreground">Today</span>
@@ -90,6 +101,10 @@ const MiniCalendar = ({ bookedSlots, onEditAvailability }) => {
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 md:w-4 md:h-4 rounded bg-accent/10 border border-accent" />
           <span className="text-xs md:text-sm text-muted-foreground">Booked</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 md:w-4 md:h-4 rounded bg-red-50 border border-red-200" />
+          <span className="text-xs md:text-sm text-muted-foreground">Blocked</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 md:w-4 md:h-4 rounded border border-border" />

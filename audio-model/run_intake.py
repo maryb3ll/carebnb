@@ -68,6 +68,7 @@ def main():
             "session_id": result.session_id,
             "final_zip_path": str(result.final_zip_path) if result.final_zip_path else None,
             "summary_pdf_path": str(result.summary_pdf_path) if result.summary_pdf_path else None,
+            "transcript": result.transcript,
             "success": True,
             "status": result.status
         }

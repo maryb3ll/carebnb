@@ -1,18 +1,19 @@
 import React from 'react';
-import Image from '../../../components/AppImage';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
 
 const VisitCard = ({ visit, onViewDetails }) => {
+  // Get first letter of patient name for avatar
+  const initial = (visit?.patientName || 'P')[0].toUpperCase();
+
   return (
     <div className="bg-card rounded-2xl p-4 md:p-6 shadow-organic hover:shadow-organic-md transition-base">
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        <div className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden flex-shrink-0">
-          <Image 
-            src={visit?.patientImage} 
-            alt={visit?.patientImageAlt}
-            className="w-full h-full object-cover"
-          />
+        <div
+          className="w-12 h-12 md:w-14 md:h-14 rounded-full flex-shrink-0 flex items-center justify-center text-white font-semibold text-lg md:text-xl"
+          style={{ backgroundColor: '#FFC0CB' }}
+        >
+          {initial}
         </div>
         
         <div className="flex-1 min-w-0">

@@ -1,45 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Icon from '../AppIcon';
 import HeaderAuth from '../HeaderAuth';
-import { supabase } from '../../lib/supabase';
+import RoleSwitcher from '../RoleSwitcher';
+import { useAuth } from '../../context/AuthContext';
 
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [currentRole, setCurrentRole] = useState('patient');
-  const [user, setUser] = useState(null);
+  const { user, currentRole } = useAuth();
 
   const isPatientView = location?.pathname === '/' || location?.pathname === '/bookings' || location?.pathname === '/request-care' || location?.pathname === '/profile' || (location?.pathname?.startsWith && location.pathname.startsWith('/patient-search-and-booking'));
   const isProviderView = location?.pathname === '/provider-dashboard-and-management';
-
-  useEffect(() => {
-    if (!supabase) return;
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-    return () => subscription?.unsubscribe();
-  }, []);
-
-  const handleRoleToggle = () => {
-    if (isPatientView) {
-      setCurrentRole('provider');
-      navigate('/provider-dashboard-and-management');
-    } else {
-      setCurrentRole('patient');
-      navigate('/patient-search-and-booking');
-    }
-  };
 
   const handleLogoClick = () => {
     if (!user) {
       navigate('/');
       return;
     }
-    if (isProviderView) {
+    // Navigate based on current role, not current page
+    if (currentRole === 'provider') {
       navigate('/provider-dashboard-and-management');
     } else {
       navigate('/patient-search-and-booking');
@@ -85,13 +65,18 @@ const Header = () => {
           >
             My bookings
           </button>
-          <button
-            type="button"
-            onClick={() => navigate('/request-care')}
-            className="px-2.5 py-1.5 rounded-lg text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors"
-          >
-            Request care
-          </button>
+
+          {/* Request care only shows for patients */}
+          {currentRole === 'patient' && (
+            <button
+              type="button"
+              onClick={() => navigate('/request-care')}
+              className="px-2.5 py-1.5 rounded-lg text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors"
+            >
+              Request care
+            </button>
+          )}
+
           <button
             type="button"
             onClick={() => navigate('/profile')}
@@ -99,17 +84,8 @@ const Header = () => {
           >
             My profile
           </button>
-          <div
-            className="role-toggle inline-flex"
-            onClick={handleRoleToggle}
-            role="button"
-            tabIndex={0}
-            onKeyPress={(e) => e?.key === 'Enter' && handleRoleToggle()}
-            aria-label={isPatientView ? 'Switch to Provider View' : 'Switch to Patient View'}
-          >
-            <Icon name={isPatientView ? 'Stethoscope' : 'User'} size={16} className="role-toggle-icon" strokeWidth={2} />
-            <span className="role-toggle-text">{isPatientView ? 'Switch to provider' : 'Switch to Patient'}</span>
-          </div>
+
+          <RoleSwitcher />
           <div className="inline-flex items-center pl-2 ml-2 border-l border-stone-100">
             <HeaderAuth />
           </div>

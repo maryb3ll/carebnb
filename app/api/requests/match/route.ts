@@ -10,6 +10,9 @@ export type MatchRequestRow = {
   status: string;
   distance_km: number;
   pdf_url: string | null;
+  audio_url: string | null;
+  transcript: string | null;
+  intake_type: string | null;
 };
 
 export async function GET(request: NextRequest) {
@@ -63,6 +66,9 @@ export async function GET(request: NextRequest) {
         status: r.status,
         distanceKm: r.distance_km,
         pdfUrl: r.pdf_url,
+        audioUrl: r.audio_url,
+        transcript: r.transcript,
+        intakeType: r.intake_type,
       })),
     });
   } catch (err) {

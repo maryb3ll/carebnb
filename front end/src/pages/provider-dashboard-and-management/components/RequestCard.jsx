@@ -7,8 +7,10 @@ import Select from '../../../components/ui/Select';
 const RequestCard = ({ request, onAccept, onDecline }) => {
   const [showDeclineModal, setShowDeclineModal] = useState(false);
   const [declineReason, setDeclineReason] = useState('');
+  const [customReason, setCustomReason] = useState('');
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [showTranscript, setShowTranscript] = useState(false);
+  const [audioElement] = useState(new Audio());
 
   const declineReasons = [
     { value: 'schedule_conflict', label: 'Schedule conflict' },
@@ -20,16 +22,57 @@ const RequestCard = ({ request, onAccept, onDecline }) => {
 
   const handleDeclineSubmit = () => {
     if (declineReason) {
-      onDecline(request?.id, declineReason);
+      // Use custom reason if "other" is selected, otherwise use the formatted label
+      let finalReason;
+      if (declineReason === 'other') {
+        finalReason = customReason;
+      } else {
+        const selectedOption = declineReasons.find(r => r.value === declineReason);
+        finalReason = selectedOption?.label || declineReason;
+      }
+      onDecline(request?.id, finalReason);
       setShowDeclineModal(false);
       setDeclineReason('');
+      setCustomReason('');
     }
   };
 
   const handlePlayAudio = () => {
-    setIsPlayingAudio(!isPlayingAudio);
-    setTimeout(() => setIsPlayingAudio(false), 3000);
+    if (!request?.audioUrl) {
+      return; // No audio to play
+    }
+
+    if (isPlayingAudio) {
+      // Stop audio
+      audioElement.pause();
+      audioElement.currentTime = 0;
+      setIsPlayingAudio(false);
+    } else {
+      // Play audio
+      audioElement.src = request.audioUrl;
+      audioElement.play()
+        .then(() => {
+          setIsPlayingAudio(true);
+        })
+        .catch(error => {
+          console.error('Error playing audio:', error);
+          alert('Failed to play audio');
+        });
+
+      // Listen for audio end
+      audioElement.onended = () => {
+        setIsPlayingAudio(false);
+      };
+    }
   };
+
+  // Cleanup audio on unmount
+  React.useEffect(() => {
+    return () => {
+      audioElement.pause();
+      audioElement.src = '';
+    };
+  }, []);
 
   return (
     <>
@@ -64,45 +107,45 @@ const RequestCard = ({ request, onAccept, onDecline }) => {
           </div>
 
           {request?.hasAudioIntake && (
-            <div className="flex flex-wrap gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                iconName={isPlayingAudio ? "Pause" : "Play"}
-                iconPosition="left"
-                onClick={handlePlayAudio}
-              >
-                {isPlayingAudio ? 'Playing...' : 'Play Audio'}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                iconName="FileText"
-                iconPosition="left"
-                onClick={() => setShowTranscript(!showTranscript)}
-              >
-                {showTranscript ? 'Hide' : 'View'} Transcript
-              </Button>
-              {request?.pdfUrl && (
+            <div className="space-y-2">
+              <div className="flex flex-wrap gap-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  iconName="Download"
+                  iconName={isPlayingAudio ? "Pause" : "Play"}
                   iconPosition="left"
-                  onClick={() => window.open(request.pdfUrl, '_blank')}
+                  onClick={handlePlayAudio}
+                  disabled={!request?.audioUrl}
                 >
-                  Download PDFs
+                  {isPlayingAudio ? 'Playing...' : 'Play Audio'}
                 </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  iconName="FileText"
+                  iconPosition="left"
+                  onClick={() => setShowTranscript(true)}
+                >
+                  View Transcript
+                </Button>
+                {request?.pdfUrl && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    iconName="Download"
+                    iconPosition="left"
+                    onClick={() => window.open(request.pdfUrl, '_blank')}
+                  >
+                    Download PDFs
+                  </Button>
+                )}
+              </div>
+              {!request?.audioUrl && (
+                <p className="text-xs text-muted-foreground">No audio available</p>
               )}
             </div>
           )}
 
-          {showTranscript && request?.transcript && (
-            <div className="bg-muted rounded-xl p-4 text-sm text-foreground">
-              <p className="font-medium mb-2">Patient Intake Transcript:</p>
-              <p className="text-muted-foreground leading-relaxed">{request?.transcript}</p>
-            </div>
-          )}
 
           <div className="flex flex-col sm:flex-row gap-2 md:gap-3 pt-2">
             <Button 
@@ -128,6 +171,44 @@ const RequestCard = ({ request, onAccept, onDecline }) => {
           </div>
         </div>
       </div>
+
+      {/* Transcript Modal */}
+      {showTranscript && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-2xl max-w-2xl w-full max-h-[80vh] flex flex-col shadow-organic-xl">
+            <div className="flex items-center justify-between p-6 border-b border-muted">
+              <h3 className="text-xl md:text-2xl font-semibold text-foreground">
+                {request?.intakeType === 'audio' ? 'Audio Transcript' : 'Patient Message'}
+              </h3>
+              <button
+                onClick={() => setShowTranscript(false)}
+                className="w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center transition-base"
+              >
+                <Icon name="X" size={20} color="var(--color-foreground)" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6">
+              <div className="prose prose-sm max-w-none">
+                <p className="text-foreground leading-relaxed whitespace-pre-wrap">
+                  {request?.transcript || 'No transcript available'}
+                </p>
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-muted">
+              <Button
+                variant="default"
+                onClick={() => setShowTranscript(false)}
+                className="w-full"
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showDeclineModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-card rounded-2xl p-6 md:p-8 max-w-md w-full shadow-organic-xl">
@@ -151,6 +232,23 @@ const RequestCard = ({ request, onAccept, onDecline }) => {
               className="mb-6"
             />
 
+            {declineReason === 'other' && (
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Please specify the reason
+                </label>
+                <textarea
+                  value={customReason}
+                  onChange={(e) => setCustomReason(e.target.value)}
+                  placeholder="Enter your reason for declining..."
+                  className="w-full px-4 rounded-xl border border-stone-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-colors resize-none flex items-center"
+                  style={{ paddingTop: '2.5rem', paddingBottom: '2.5rem' }}
+                  rows={3}
+                  required
+                />
+              </div>
+            )}
+
             {request?.referralSuggestions && request?.referralSuggestions?.length > 0 && (
               <div className="mb-6">
                 <p className="text-sm font-medium text-foreground mb-3">Suggested Referrals:</p>
@@ -173,10 +271,10 @@ const RequestCard = ({ request, onAccept, onDecline }) => {
               >
                 Cancel
               </Button>
-              <Button 
-                variant="destructive" 
+              <Button
+                variant="destructive"
                 onClick={handleDeclineSubmit}
-                disabled={!declineReason}
+                disabled={!declineReason || (declineReason === 'other' && !customReason.trim())}
                 className="flex-1"
               >
                 Confirm Decline

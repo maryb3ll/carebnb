@@ -3,8 +3,9 @@ import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 import { supabase } from '../../../lib/supabase';
+import { localDateTimeToUTC } from '../../../lib/timezone';
 
-const BookingPanel = ({ onSubmit }) => {
+const BookingPanel = ({ bookingData, onSubmit }) => {
   const [intakeMethod, setIntakeMethod] = useState('text');
   const [textInput, setTextInput] = useState('');
   const [isRecording, setIsRecording] = useState(false);
@@ -15,6 +16,21 @@ const BookingPanel = ({ onSubmit }) => {
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   const fileInputRef = useRef(null);
+
+  // Convert bookingData (date + time) to UTC ISO timestamp
+  const getAppointmentTime = () => {
+    if (!bookingData?.date || !bookingData?.time) {
+      // Fallback to tomorrow if no specific time selected
+      return new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+    }
+
+    try {
+      return localDateTimeToUTC(bookingData.date, bookingData.time);
+    } catch (error) {
+      console.error('Error converting appointment time:', error);
+      return new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+    }
+  };
 
   const handleTextSubmit = async () => {
     if (!textInput?.trim()) return;
@@ -28,6 +44,7 @@ const BookingPanel = ({ onSubmit }) => {
 
       const formData = new FormData();
       formData.append('text', textInput);
+      formData.append('requestedTime', getAppointmentTime()); // Add appointment time
       // Don't send careRequestId - let the API create it
 
       const response = await fetch('/api/intake/process', {
@@ -76,6 +93,7 @@ const BookingPanel = ({ onSubmit }) => {
 
       const formData = new FormData();
       formData.append('audio', file);
+      formData.append('requestedTime', getAppointmentTime()); // Add appointment time
       // Don't send careRequestId - let the API create it
 
       const response = await fetch('/api/intake/process', {
@@ -134,6 +152,7 @@ const BookingPanel = ({ onSubmit }) => {
 
             const formData = new FormData();
             formData.append('audio', audioFile);
+            formData.append('requestedTime', getAppointmentTime()); // Add appointment time
             // Don't send careRequestId - let the API create it
 
             const response = await fetch('/api/intake/process', {

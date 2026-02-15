@@ -11,6 +11,7 @@ import Icon from '../../components/AppIcon';
 import { providersData } from '../../data/providers';
 import { getProviders } from '../../api/carebnb';
 import { filterProvidersByCareType, rankProviders } from './searchUtils';
+import { supabase } from '../../lib/supabase';
 
 const SPECIALIST_OPTIONS = [
   'Family medicine doctor',
@@ -33,6 +34,7 @@ const PatientSearchAndBooking = () => {
   const navigate = useNavigate();
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [showBookingPanel, setShowBookingPanel] = useState(false);
+  const [bookingData, setBookingData] = useState(null);
   const [filteredProviders, setFilteredProviders] = useState([]);
   const [totalProviderCount, setTotalProviderCount] = useState(null);
   const [usedNameFilter, setUsedNameFilter] = useState(false);
@@ -42,6 +44,8 @@ const PatientSearchAndBooking = () => {
   const [userLocation, setUserLocation] = useState({ lat: 37.44, lng: -122.17 });
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [selectedSpecialist, setSelectedSpecialist] = useState(null);
+  const [recentRequests, setRecentRequests] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const filterRef = useRef(null);
   const providersScrollRef = useRef(null);
 
@@ -68,6 +72,112 @@ const PatientSearchAndBooking = () => {
     );
   }, []);
 
+  // Generate notifications from bookings
+  const generateNotifications = (bookings) => {
+    const notifs = [];
+    const now = new Date();
+
+    bookings.forEach((booking) => {
+      const providerName = booking.provider?.name || "Provider";
+      const service = booking.service.replace(/_/g, " ");
+      const scheduledDate = new Date(booking.scheduled_at);
+      const dateStr = scheduledDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+      const timeStr = scheduledDate.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+
+      // Notification for confirmed appointments
+      if (booking.status === "confirmed") {
+        notifs.push({
+          id: `confirm-${booking.id}`,
+          type: "confirmation",
+          title: "Appointment Confirmed",
+          message: `Your appointment with ${providerName} for ${service} on ${dateStr} at ${timeStr} has been confirmed.`,
+          timestamp: new Date(scheduledDate.getTime() - 24 * 60 * 60 * 1000), // 1 day before
+          read: false
+        });
+
+        // Reminder for upcoming appointments (within 24 hours)
+        const hoursUntil = (scheduledDate - now) / (1000 * 60 * 60);
+        if (hoursUntil > 0 && hoursUntil < 24) {
+          notifs.push({
+            id: `reminder-${booking.id}`,
+            type: "reminder",
+            title: "Upcoming Appointment Reminder",
+            message: `You have an appointment with ${providerName} ${hoursUntil < 1 ? 'soon' : 'tomorrow'} at ${timeStr}. Please ensure someone is home to receive the provider.`,
+            timestamp: new Date(now.getTime() - 1000 * 60 * 60), // 1 hour ago
+            read: false
+          });
+        }
+      }
+
+      // Notification for pending appointments
+      if (booking.status === "pending") {
+        notifs.push({
+          id: `pending-${booking.id}`,
+          type: "update",
+          title: "Request Status Update",
+          message: `${providerName} is reviewing your request for ${service}. You'll be notified when they respond.`,
+          timestamp: new Date(scheduledDate.getTime() - 12 * 60 * 60 * 1000), // 12 hours before
+          read: false
+        });
+      }
+
+      // Notification for declined appointments
+      if (booking.status === "declined") {
+        notifs.push({
+          id: `declined-${booking.id}`,
+          type: "update",
+          title: "Request Update",
+          message: `${providerName} declined your request for ${service}. Click to view alternative providers.`,
+          timestamp: new Date(scheduledDate.getTime() - 6 * 60 * 60 * 1000), // 6 hours before
+          read: false
+        });
+      }
+    });
+
+    // Sort by timestamp (most recent first) and take top 5
+    return notifs
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .slice(0, 5);
+  };
+
+  // Fetch recent bookings
+  useEffect(() => {
+    const fetchRecentBookings = async () => {
+      try {
+        const headers = {};
+        if (supabase) {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.access_token) headers.Authorization = `Bearer ${session.access_token}`;
+        }
+        const res = await fetch("/api/bookings", { headers });
+        const data = await res.json();
+
+        if (res.ok && data.bookings) {
+          // Get top 3 most recent bookings for requests section
+          const recent = data.bookings.slice(0, 3).map(booking => ({
+            id: booking.id,
+            providerName: booking.provider?.name || "Provider",
+            providerImage: booking.provider?.photo_url || "https://img.rocket.new/generatedImages/rocket_gen_img_1787f0ff5-1764790614873.png",
+            providerImageAlt: `${booking.provider?.name || "Provider"} - ${booking.provider?.role || "Healthcare provider"}`,
+            serviceType: booking.service.replace(/_/g, " "),
+            requestedDate: new Date(booking.scheduled_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }),
+            requestedTime: new Date(booking.scheduled_at).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }),
+            status: booking.status === "confirmed" ? "accepted" : booking.status
+          }));
+          setRecentRequests(recent);
+
+          // Generate notifications from all bookings
+          const generatedNotifications = generateNotifications(data.bookings);
+          setNotifications(generatedNotifications);
+        }
+      } catch (error) {
+        console.error('Failed to fetch recent bookings:', error);
+      }
+    };
+
+    fetchRecentBookings();
+  }, []);
+
   useEffect(() => {
     if (!useApi) return;
     setLoading(true);
@@ -81,72 +191,8 @@ const PatientSearchAndBooking = () => {
       .finally(() => setLoading(false));
   }, [useApi, userLocation.lat, userLocation.lng]);
 
-  const mockRequests = [
-  {
-    id: 1,
-    providerName: "Dr. Sarah Mitchell",
-    providerImage: "https://img.rocket.new/generatedImages/rocket_gen_img_1787f0ff5-1764790614873.png",
-    providerImageAlt: "Professional female nurse with warm smile wearing navy blue scrubs and stethoscope in modern medical facility",
-    serviceType: "Post-surgery wound care",
-    requestedDate: "Feb 15, 2026",
-    requestedTime: "3:00 PM",
-    status: "accepted"
-  },
-  {
-    id: 2,
-    providerName: "Michael Chen",
-    providerImage: "https://img.rocket.new/generatedImages/rocket_gen_img_1b1c04106-1763296347849.png",
-    providerImageAlt: "Asian male nurse in white medical coat with professional demeanor standing in hospital corridor with medical equipment visible",
-    serviceType: "IV therapy administration",
-    requestedDate: "Feb 16, 2026",
-    requestedTime: "10:00 AM",
-    status: "pending"
-  },
-  {
-    id: 3,
-    providerName: "James Thompson",
-    providerImage: "https://img.rocket.new/generatedImages/rocket_gen_img_1adc98132-1763295638675.png",
-    providerImageAlt: "African American male physical therapist in black athletic wear demonstrating exercise technique with professional equipment in modern therapy room",
-    serviceType: "Physical therapy session",
-    requestedDate: "Feb 14, 2026",
-    requestedTime: "2:00 PM",
-    status: "declined"
-  }];
 
 
-  const mockNotifications = [
-  {
-    id: 1,
-    type: "confirmation",
-    title: "Appointment Confirmed",
-    message: "Your appointment with Dr. Sarah Mitchell for post-surgery wound care on Feb 15, 2026 at 3:00 PM has been confirmed.",
-    timestamp: new Date(Date.now() - 1800000),
-    read: false
-  },
-  {
-    id: 2,
-    type: "reminder",
-    title: "Upcoming Appointment Reminder",
-    message: "You have an appointment with Dr. Sarah Mitchell tomorrow at 3:00 PM. Please ensure someone is home to receive the provider.",
-    timestamp: new Date(Date.now() - 3600000),
-    read: false
-  },
-  {
-    id: 3,
-    type: "update",
-    title: "Request Status Update",
-    message: "Michael Chen is reviewing your request for IV therapy administration. You'll be notified once they respond.",
-    timestamp: new Date(Date.now() - 7200000),
-    read: true
-  },
-  {
-    id: 4,
-    type: "update",
-    title: "Alternative Providers Available",
-    message: "James Thompson declined your request, but we've found 3 similar providers in your area who are available.",
-    timestamp: new Date(Date.now() - 10800000),
-    read: true
-  }];
 
 
   const getFallbackResults = (searchParams) => {
@@ -210,14 +256,48 @@ const PatientSearchAndBooking = () => {
     setSelectedProvider(null);
   };
 
-  const handleBookAppointment = (bookingData) => {
+  const handleBookAppointment = (data) => {
+    setBookingData(data); // Store the selected date, time, and provider
     setSelectedProvider(null);
     setShowBookingPanel(true);
   };
 
-  const handleIntakeSubmit = (intakeData) => {
+  const handleIntakeSubmit = async (intakeData) => {
     // Close modal (care_request was created and updated by the intake API)
     setShowBookingPanel(false);
+
+    // Refresh bookings after a short delay to allow the backend to create the pending booking
+    setTimeout(async () => {
+      try {
+        const headers = {};
+        if (supabase) {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.access_token) headers.Authorization = `Bearer ${session.access_token}`;
+        }
+        const res = await fetch("/api/bookings", { headers });
+        const data = await res.json();
+
+        if (res.ok && data.bookings) {
+          const recent = data.bookings.slice(0, 3).map(booking => ({
+            id: booking.id,
+            providerName: booking.provider?.name || "Provider",
+            providerImage: booking.provider?.photo_url || "https://img.rocket.new/generatedImages/rocket_gen_img_1787f0ff5-1764790614873.png",
+            providerImageAlt: `${booking.provider?.name || "Provider"} - ${booking.provider?.role || "Healthcare provider"}`,
+            serviceType: booking.service.replace(/_/g, " "),
+            requestedDate: new Date(booking.scheduled_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }),
+            requestedTime: new Date(booking.scheduled_at).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }),
+            status: booking.status === "confirmed" ? "accepted" : booking.status
+          }));
+          setRecentRequests(recent);
+
+          // Refresh notifications
+          const generatedNotifications = generateNotifications(data.bookings);
+          setNotifications(generatedNotifications);
+        }
+      } catch (error) {
+        console.error('Failed to refresh bookings:', error);
+      }
+    }, 2000); // 2 second delay to allow backend processing
   };
 
   const handleViewAlternatives = (requestId) => {
@@ -347,16 +427,17 @@ const PatientSearchAndBooking = () => {
 
         {showBookingPanel &&
         <BookingPanel
+          bookingData={bookingData}
           onSubmit={handleIntakeSubmit}
         />
         }
 
         <RequestStatus
-          requests={mockRequests}
+          requests={recentRequests}
           onViewAlternatives={handleViewAlternatives} />
         
 
-        <NotificationsList notifications={mockNotifications} />
+        <NotificationsList notifications={notifications} />
       </main>
       {selectedProvider &&
       <ProviderModal

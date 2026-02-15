@@ -78,15 +78,23 @@ def run_cot_summarizer(iteration: int = None, session_id: str = None) -> Dict:
             # Session mode: read from session directory
             metadata_path = get_session_path(session_id, component=3) / 'metadata.json'
             comp3_dir = get_session_path(session_id, component=3)
+            print(f"  Checking directory: {comp3_dir}")
+            print(f"  Directory exists: {comp3_dir.exists()}")
+            if comp3_dir.exists():
+                all_files = list(comp3_dir.glob('*'))
+                print(f"  Files in directory: {[f.name for f in all_files]}")
             source_paths = []
             for i in range(1, 10):  # Check for up to 9 sources
                 source_path = comp3_dir / f'source_{i}.pdf'
+                print(f"  Checking: {source_path.name} - exists: {source_path.exists()}")
                 if source_path.exists():
                     source_paths.append(source_path)
             if not source_paths:
                 print("⚠ WARNING: No sources found from Component 3")
                 print("  Will create summary based only on keywords and clinical knowledge")
                 print()
+            else:
+                print(f"  ✓ Found {len(source_paths)} source PDFs")
         else:
             # CLI mode: use existing utility function
             metadata_path, source_paths = get_component3_sources(current_iteration)

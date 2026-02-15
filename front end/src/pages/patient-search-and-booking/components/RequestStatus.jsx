@@ -3,7 +3,7 @@ import Image from '../../../components/AppImage';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
 
-const STATUS_ORDER = { accepted: 0, pending: 1, declined: 2 };
+const STATUS_ORDER = { accepted: 0, pending: 1, cancelled: 2, declined: 3, completed: 4 };
 
 const STATUS_CONFIG = {
   accepted: {
@@ -32,6 +32,24 @@ const STATUS_CONFIG = {
     badge: 'bg-amber-50 text-amber-700 border border-amber-200',
     calloutBg: 'bg-amber-50 border border-amber-100',
     calloutIcon: 'var(--color-warning)',
+  },
+  cancelled: {
+    label: 'Cancelled',
+    icon: 'Ban',
+    iconBg: 'bg-stone-200',
+    iconColor: 'var(--color-muted-foreground)',
+    badge: 'bg-stone-50 text-stone-700 border border-stone-200',
+    calloutBg: 'bg-stone-50 border border-stone-100',
+    calloutIcon: 'var(--color-muted-foreground)',
+  },
+  completed: {
+    label: 'Completed',
+    icon: 'CheckCircle2',
+    iconBg: 'bg-blue-100',
+    iconColor: 'var(--color-primary)',
+    badge: 'bg-blue-50 text-blue-700 border border-blue-200',
+    calloutBg: 'bg-blue-50 border border-blue-100',
+    calloutIcon: 'var(--color-primary)',
   },
 };
 
@@ -186,7 +204,41 @@ const RequestStatus = ({ requests, onViewAlternatives }) => {
                             className="flex-shrink-0 mt-0.5"
                           />
                           <p className="text-sm text-foreground leading-relaxed">
-                            Waiting for the provider to respond. You’ll be notified when they accept or decline.
+                            Waiting for the provider to respond. You'll be notified when they accept or decline.
+                          </p>
+                        </div>
+                      )}
+
+                      {request?.status === 'cancelled' && (
+                        <div
+                          className={`flex items-start gap-3 p-3 rounded-lg border ${config.calloutBg}`}
+                        >
+                          <Icon
+                            name="Info"
+                            size={18}
+                            color={config.calloutIcon}
+                            strokeWidth={2}
+                            className="flex-shrink-0 mt-0.5"
+                          />
+                          <p className="text-sm text-foreground leading-relaxed">
+                            This appointment was cancelled.
+                          </p>
+                        </div>
+                      )}
+
+                      {request?.status === 'completed' && (
+                        <div
+                          className={`flex items-start gap-3 p-3 rounded-lg border ${config.calloutBg}`}
+                        >
+                          <Icon
+                            name="Info"
+                            size={18}
+                            color={config.calloutIcon}
+                            strokeWidth={2}
+                            className="flex-shrink-0 mt-0.5"
+                          />
+                          <p className="text-sm text-foreground leading-relaxed">
+                            This appointment has been completed.
                           </p>
                         </div>
                       )}

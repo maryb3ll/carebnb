@@ -31,3 +31,53 @@ next-env.d.ts
 audio-model/data/medical-speech/
 audio-model/data/medical-transcriptions/
 audio-model/data/dataset_automated_medical_transcription/
+
+# Audio model session data (generated at runtime)
+audio-model/data/sessions/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+venv/
+env/
+ENV/
+.venv/
+
+# Logs
+*.log
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Vite
+.vite/
+
+# Claude Code
+.claude/
