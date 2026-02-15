@@ -43,6 +43,7 @@ const PatientSearchAndBooking = () => {
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [selectedSpecialist, setSelectedSpecialist] = useState(null);
   const filterRef = useRef(null);
+  const providersScrollRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -251,18 +252,46 @@ const PatientSearchAndBooking = () => {
               <h2 className="text-2xl md:text-3xl font-semibold text-foreground">
                 {loading ? 'Loading…' : hasSearched ? `${displayCount} Provider${displayCount !== 1 ? 's' : ''} found` : 'Providers near you'}
               </h2>
-              <button
-                type="button"
-                id="patient-filter-by-specialist-btn"
-                aria-expanded={filterPanelOpen}
-                aria-haspopup="listbox"
-                onClick={() => setFilterPanelOpen((o) => !o)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm md:text-base transition-colors duration-250 ${filterPanelOpen ? 'bg-stone-100 text-primary' : 'text-foreground hover:text-primary'}`}
-              >
-                <Icon name="SlidersHorizontal" size={20} strokeWidth={2} />
-                <span className="hidden sm:inline">Filters</span>
-                {selectedSpecialist && <span className="ml-1 rounded-full bg-primary/20 px-1.5 py-0.5 text-xs font-medium text-primary">1</span>}
-              </button>
+              <div className="flex items-center gap-2">
+                {((hasSearched ? displayProviders : providersData)?.length ?? 0) > 0 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const el = providersScrollRef.current;
+                        if (el) el.scrollBy({ left: -320, behavior: 'smooth' });
+                      }}
+                      className="w-9 h-9 rounded-lg border border-stone-200 bg-white flex items-center justify-center text-foreground hover:bg-stone-50 hover:border-stone-300 transition-colors"
+                      aria-label="Scroll providers left"
+                    >
+                      <Icon name="ChevronLeft" size={18} strokeWidth={2} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const el = providersScrollRef.current;
+                        if (el) el.scrollBy({ left: 320, behavior: 'smooth' });
+                      }}
+                      className="w-9 h-9 rounded-lg border border-stone-200 bg-white flex items-center justify-center text-foreground hover:bg-stone-50 hover:border-stone-300 transition-colors"
+                      aria-label="Scroll providers right"
+                    >
+                      <Icon name="ChevronRight" size={18} strokeWidth={2} />
+                    </button>
+                  </>
+                )}
+                <button
+                  type="button"
+                  id="patient-filter-by-specialist-btn"
+                  aria-expanded={filterPanelOpen}
+                  aria-haspopup="listbox"
+                  onClick={() => setFilterPanelOpen((o) => !o)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm md:text-base transition-colors duration-250 ${filterPanelOpen ? 'bg-stone-100 text-primary' : 'text-foreground hover:text-primary'}`}
+                >
+                  <Icon name="SlidersHorizontal" size={20} strokeWidth={2} />
+                  <span className="hidden sm:inline">Filters</span>
+                  {selectedSpecialist && <span className="ml-1 rounded-full bg-primary/20 px-1.5 py-0.5 text-xs font-medium text-primary">1</span>}
+                </button>
+              </div>
 
               {filterPanelOpen && (
                 <div className="absolute right-0 top-full mt-2 w-full max-w-sm bg-white rounded-xl shadow-lg border-2 border-primary/30 z-[200] overflow-hidden" role="listbox" aria-label="Filter by specialist">
@@ -292,14 +321,18 @@ const PatientSearchAndBooking = () => {
               )}
             </div>
 
-            <div className="flex gap-4 overflow-x-auto pb-4 smooth-scroll">
-              {(hasSearched ? displayProviders : providersData)?.map((provider) =>
-              <ProviderCard
-                key={provider?.id}
-                provider={provider}
-                onClick={handleProviderClick} />
-
-              )}
+            <div
+              ref={providersScrollRef}
+              className="flex gap-4 overflow-x-auto pb-4 smooth-scroll"
+              style={{ scrollBehavior: 'smooth' }}
+            >
+              {(hasSearched ? displayProviders : providersData)?.map((provider) => (
+                <ProviderCard
+                  key={provider?.id}
+                  provider={provider}
+                  onClick={handleProviderClick}
+                />
+              ))}
             </div>
             
             {hasSearched && displayProviders?.length === 0 &&
