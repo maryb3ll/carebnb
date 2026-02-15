@@ -1,15 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Icon from '../AppIcon';
 import HeaderAuth from '../HeaderAuth';
+import { supabase } from '../../lib/supabase';
 
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [currentRole, setCurrentRole] = useState('patient');
+  const [user, setUser] = useState(null);
 
-  const isPatientView = location?.pathname === '/' || location?.pathname === '/bookings' || location?.pathname === '/request-care' || (location?.pathname?.startsWith && location.pathname.startsWith('/patient-search-and-booking'));
+  const isPatientView = location?.pathname === '/' || location?.pathname === '/bookings' || location?.pathname === '/request-care' || location?.pathname === '/profile' || (location?.pathname?.startsWith && location.pathname.startsWith('/patient-search-and-booking'));
   const isProviderView = location?.pathname === '/provider-dashboard-and-management';
+
+  useEffect(() => {
+    if (!supabase) return;
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription?.unsubscribe();
+  }, []);
 
   const handleRoleToggle = () => {
     if (isPatientView) {
@@ -22,7 +35,15 @@ const Header = () => {
   };
 
   const handleLogoClick = () => {
-    window.location.href = '/';
+    if (!user) {
+      navigate('/');
+      return;
+    }
+    if (isProviderView) {
+      navigate('/provider-dashboard-and-management');
+    } else {
+      navigate('/patient-search-and-booking');
+    }
   };
 
   return (
@@ -52,6 +73,13 @@ const Header = () => {
         <nav className="header-nav shrink-0">
           <button
             type="button"
+            onClick={handleLogoClick}
+            className="px-2.5 py-1.5 rounded-lg text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors"
+          >
+            Home
+          </button>
+          <button
+            type="button"
             onClick={() => navigate('/bookings')}
             className="px-2.5 py-1.5 rounded-lg text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors"
           >
@@ -63,6 +91,13 @@ const Header = () => {
             className="px-2.5 py-1.5 rounded-lg text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors"
           >
             Request care
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/profile')}
+            className="px-2.5 py-1.5 rounded-lg text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors"
+          >
+            My profile
           </button>
           <div
             className="role-toggle inline-flex"

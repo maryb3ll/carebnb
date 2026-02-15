@@ -5,23 +5,40 @@ import Header from "../components/ui/Header";
 
 export default function SignupPage() {
   const navigate = useNavigate();
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
 
+  function isValidEmail(value) {
+    const trimmed = (value || "").trim();
+    return trimmed.includes("@") && trimmed.includes(".") && trimmed.indexOf("@") < trimmed.lastIndexOf(".");
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
     setMessage(null);
+    const trimmedEmail = email.trim();
+    if (!isValidEmail(trimmedEmail)) {
+      setError("Please enter a valid email address (e.g. name@example.com).");
+      return;
+    }
     setLoading(true);
     try {
       if (!supabase) {
         setError("Auth is not configured.");
         return;
       }
-      const { error: err } = await supabase.auth.signUp({ email, password });
+      const { error: err } = await supabase.auth.signUp({
+        email: trimmedEmail,
+        password,
+        options: {
+          data: { full_name: fullName.trim() || undefined },
+        },
+      });
       if (err) {
         setError(err.message || "Sign up failed.");
         return;
@@ -42,6 +59,21 @@ export default function SignupPage() {
       <h1 className="text-2xl font-semibold text-stone-900 mb-2">Sign up</h1>
       <p className="text-stone-600 mb-6">Create your CareBnB account.</p>
       <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label htmlFor="signup-full-name" className="block text-sm font-medium text-stone-700 mb-1">
+            Full name
+          </label>
+          <input
+            id="signup-full-name"
+            type="text"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            required
+            autoComplete="name"
+            placeholder="e.g. Jane Smith"
+            className="w-full rounded-xl border border-stone-300 px-4 py-2.5 text-stone-900 focus:ring-2 focus:ring-primary focus:border-primary"
+          />
+        </div>
         <div>
           <label htmlFor="signup-email" className="block text-sm font-medium text-stone-700 mb-1">
             Email

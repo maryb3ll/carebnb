@@ -26,7 +26,7 @@ export default function HeaderAuth() {
 
   async function handleSignOut() {
     if (supabase) await supabase.auth.signOut();
-    navigate("/patient-search-and-booking");
+    navigate("/");
   }
 
   if (loading) {
