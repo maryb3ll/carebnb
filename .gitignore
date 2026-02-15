@@ -26,3 +26,8 @@ npm-debug.log*
 
 # TypeScript
 next-env.d.ts
+
+# Large audio datasets (too big for GitHub)
+audio-model/data/medical-speech/
+audio-model/data/medical-transcriptions/
+audio-model/data/dataset_automated_medical_transcription/
