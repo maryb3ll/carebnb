@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Shared header sizing – must match SPA (front end/src/styles/tailwind.css) for consistent menu bar on all pages */
+:root {
+  --header-bar-height: 52px;
+  --header-logo-height: clamp(48px, 10vw, 120px);
+  --content-pt: clamp(80px, 12vw, 120px);
+}
+@media (max-width: 768px) {
+  :root {
+    --header-bar-height: 48px;
+    --header-logo-height: clamp(40px, 12vw, 96px);
+    --content-pt: clamp(72px, 14vw, 96px);
+  }
+}
+
+html {
+  width: 100%;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  color: #1c1917;
+  background: #fafaf9;
+}
+
+/* Scale main content top padding with viewport */
+body > main {
+  padding-top: var(--content-pt);
+}
+
+/* Next.js app header – same dimensions as SPA header-container (keep in sync for all pages) */
+.app-header-bar {
+  min-height: var(--header-bar-height);
+  height: var(--header-bar-height);
+}
+.app-header-logo {
+  height: var(--header-logo-height);
+  width: auto;
+  max-height: 120px;
+}
+@media (max-width: 768px) {
+  .app-header-logo {
+    max-height: 96px;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "short_name": "carebnb",
+  "name": "carebnb",
+  "icons": [
+    {
+      "src": "assets/images/Favicon-1771110114056.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

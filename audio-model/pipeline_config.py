@@ -22,7 +22,7 @@ class PipelineConfig:
     MAX_TEXT_LENGTH = 50000     # Maximum text input length in characters
 
     # Supported formats
-    AUDIO_FORMATS = {'m4a', 'wav', 'mp3', 'flac', 'aac', 'ogg', 'wma', 'aiff'}
+    AUDIO_FORMATS = {'m4a', 'wav', 'mp3', 'flac', 'aac', 'ogg', 'wma', 'aiff', 'webm'}
     TEXT_FORMATS = {'txt'}
 
     # Mode
