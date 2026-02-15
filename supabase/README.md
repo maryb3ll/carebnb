@@ -14,3 +14,5 @@
 5. **Verify**: In Table Editor, confirm tables exist: `providers`, `patients`, `care_requests`, `bookings`. Check that RPCs appear under Database → Functions: `match_providers`, `match_requests`.
 
 6. **Re-run seed (optional)**: If you need fresh demo data, you can truncate and re-run the INSERT sections of `schema.sql` (or run the whole file again; note: providers/requests will duplicate if run multiple times).
+
+7. **Stanford doctors (optional)**: To replace example providers with real data from `stanford_doctors.csv`, run `node scripts/generate-stanford-seed.js` to regenerate the SQL, then run `supabase/seed_stanford_providers.sql` in the SQL Editor. This deletes all existing providers and inserts the CSV data (all doctors get `nursing` service and a default Stanford-area location).
