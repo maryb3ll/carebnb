@@ -1,6 +1,28 @@
-# Ignore everything in the root directory
-/*
+# dependencies
+node_modules
+.pnp
+.pnp.js
 
-# Except these
-!/.gitignore
-!/audio-model/
+# env (keep keys out of repo)
+.env
+.env.local
+.env*.local
+
+# next
+.next
+out
+
+# misc
+.DS_Store
+*.pem
+debug.log
+npm-debug.log*
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# TypeScript
+next-env.d.ts
