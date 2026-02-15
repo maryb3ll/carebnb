@@ -10,16 +10,26 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  function isValidEmail(value) {
+    const trimmed = (value || "").trim();
+    return trimmed.includes("@") && trimmed.includes(".") && trimmed.indexOf("@") < trimmed.lastIndexOf(".");
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
+    const trimmedEmail = email.trim();
+    if (!isValidEmail(trimmedEmail)) {
+      setError("Please enter a valid email address (e.g. name@example.com).");
+      return;
+    }
     setLoading(true);
     try {
       if (!supabase) {
         setError("Auth is not configured.");
         return;
       }
-      const { error: err } = await supabase.auth.signInWithPassword({ email, password });
+      const { error: err } = await supabase.auth.signInWithPassword({ email: trimmedEmail, password });
       if (err) {
         setError(err.message || "Login failed.");
         return;
@@ -36,8 +46,8 @@ export default function LoginPage() {
     <>
       <Header />
       <div className="max-w-sm mx-auto main-content-pt px-4 w-full min-w-0">
-      <h1 className="text-2xl font-semibold text-stone-900 mb-2">Log in</h1>
-      <p className="text-stone-600 mb-6">Sign in to your CareBnB account.</p>
+      <h1 className="text-2xl font-semibold text-stone-900 mb-2">Patient log in</h1>
+      <p className="text-stone-600 mb-6">Sign in to book care or manage your bookings.</p>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-stone-700 mb-1">
@@ -83,11 +93,18 @@ export default function LoginPage() {
         onClick={() => navigate("/signup")}
         className="block w-full mt-4 text-sm text-stone-500 hover:text-stone-700"
       >
-        Don&apos;t have an account? Sign up
+        Don&apos;t have an account? Patient sign up
       </button>
       <button
         type="button"
-        onClick={() => navigate("/patient-search-and-booking")}
+        onClick={() => navigate("/login/provider")}
+        className="block w-full mt-3 text-sm text-stone-500 hover:text-stone-700"
+      >
+        I&apos;m a provider — log in here
+      </button>
+      <button
+        type="button"
+        onClick={() => { window.location.href = "/"; }}
         className="inline-block mt-6 text-sm text-stone-500 hover:text-stone-700"
       >
         Back

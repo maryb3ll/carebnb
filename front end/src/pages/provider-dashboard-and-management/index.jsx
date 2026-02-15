@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Helmet } from 'react-helmet';
 import Header from '../../components/ui/Header';
 import StatCard from './components/StatCard';
@@ -6,6 +6,8 @@ import VisitCard from './components/VisitCard';
 import RequestCard from './components/RequestCard';
 import MiniCalendar from './components/MiniCalendar';
 import CompletedVisitCard from './components/CompletedVisitCard';
+import { getProviderBookings, updateBooking } from '../../api/carebnb';
+import { supabase } from '../../lib/supabase';
 
 const ProviderDashboardAndManagement = () => {
   const [todaysVisits] = useState([
@@ -41,37 +43,67 @@ const ProviderDashboardAndManagement = () => {
   }]
   );
 
-  const [pendingRequests, setPendingRequests] = useState([
-  {
-    id: 1,
-    patientName: "David Thompson",
-    patientImage: "https://img.rocket.new/generatedImages/rocket_gen_img_175ea645a-1763293958593.png",
-    patientImageAlt: "Caucasian man with short brown hair wearing blue collared shirt with professional demeanor in office environment",
-    service: "IV therapy",
-    requestedTime: "Feb 15, 2026 at 11:00 AM",
-    location: "567 Elm Street",
-    hasAudioIntake: true,
-    transcript: "Hi, I'm David Thompson. I need IV therapy for dehydration. I've been experiencing severe nausea and vomiting for the past two days. My doctor recommended IV fluids. I'm available tomorrow morning around 11 AM. I live at 567 Elm Street. Please let me know if you can help.",
-    referralSuggestions: [
-    { name: "Dr. Lisa Martinez", specialty: "Internal Medicine Specialist" },
-    { name: "Nurse Practitioner James Wilson", specialty: "Home Health Care" }]
+  const [pendingRequests, setPendingRequests] = useState([]);
+  const [pendingRequestsLoading, setPendingRequestsLoading] = useState(true);
+  const [providerNotLinked, setProviderNotLinked] = useState(false);
 
-  },
-  {
-    id: 2,
-    patientName: "Jennifer Lee",
-    patientImage: "https://img.rocket.new/generatedImages/rocket_gen_img_16e01c15b-1763295653314.png",
-    patientImageAlt: "Asian woman with shoulder-length black hair wearing white medical coat with stethoscope in clinical setting",
-    service: "Wound care",
-    requestedTime: "Feb 16, 2026 at 3:00 PM",
-    location: "890 Cedar Lane",
-    hasAudioIntake: true,
-    transcript: "Hello, this is Jennifer Lee. I had surgery last week and need wound care assistance. The surgical site needs to be cleaned and bandages changed daily. I'm requesting a visit on February 16th around 3 PM. My address is 890 Cedar Lane. Thank you.",
-    referralSuggestions: [
-    { name: "Wound Care Specialist Dr. Robert Kim", specialty: "Advanced Wound Management" }]
+  const formatRequestedTime = (scheduledAt) => {
+    if (!scheduledAt) return '—';
+    const d = new Date(scheduledAt);
+    if (Number.isNaN(d.getTime())) return scheduledAt;
+    return d.toLocaleString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+  };
 
-  }]
-  );
+  const fetchPendingRequests = useCallback(async () => {
+    if (!supabase) {
+      setPendingRequestsLoading(false);
+      return;
+    }
+    setPendingRequestsLoading(true);
+    setProviderNotLinked(false);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const { bookings: list, providerLinked } = await getProviderBookings(session?.access_token ?? null);
+      setProviderNotLinked(providerLinked === false);
+      const pending = (list || [])
+        .filter((b) => b.status === 'pending')
+        .map((b) => {
+          const hasTranscript = Boolean(b.intake_transcript && String(b.intake_transcript).trim());
+          const hasKeywords = Array.isArray(b.intake_keywords) && b.intake_keywords.length > 0;
+          const hasIntake = hasTranscript || hasKeywords;
+          return {
+            id: b.id,
+            patientName: b.patientName || b.patient_name || 'Patient',
+            patientImage: null,
+            patientImageAlt: '',
+            service: b.service || '—',
+            requestedTime: formatRequestedTime(b.scheduled_at),
+            location: b.patient_phone || 'Address to be confirmed',
+            hasAudioIntake: hasIntake,
+            hasTranscript,
+            transcript: (b.intake_transcript && String(b.intake_transcript).trim()) || null,
+            keywords: hasKeywords ? b.intake_keywords : [],
+            referralSuggestions: [],
+          };
+        }));
+      setPendingRequests(pending);
+    } catch {
+      setPendingRequests([]);
+    } finally {
+      setPendingRequestsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchPendingRequests();
+  }, [fetchPendingRequests]);
+
+  useEffect(() => {
+    if (!supabase) return;
+    const onVisibility = () => { if (document.visibilityState === 'visible') fetchPendingRequests(); };
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => document.removeEventListener('visibilitychange', onVisibility);
+  }, [fetchPendingRequests, supabase]);
 
   const [completedVisits] = useState([
   {
@@ -106,14 +138,24 @@ const ProviderDashboardAndManagement = () => {
     console.log('Viewing details for:', visit);
   };
 
-  const handleAcceptRequest = (requestId) => {
-    console.log('Accepting request:', requestId);
-    setPendingRequests((prev) => prev?.filter((req) => req?.id !== requestId));
+  const handleAcceptRequest = async (requestId) => {
+    try {
+      const { data: { session } } = supabase ? await supabase.auth.getSession() : { data: { session: null } };
+      await updateBooking(requestId, { status: 'confirmed' }, session?.access_token);
+      setPendingRequests((prev) => prev?.filter((req) => req?.id !== requestId) ?? []);
+    } catch {
+      // keep request in list on error
+    }
   };
 
-  const handleDeclineRequest = (requestId, reason) => {
-    console.log('Declining request:', requestId, 'Reason:', reason);
-    setPendingRequests((prev) => prev?.filter((req) => req?.id !== requestId));
+  const handleDeclineRequest = async (requestId, reason) => {
+    try {
+      const { data: { session } } = supabase ? await supabase.auth.getSession() : { data: { session: null } };
+      await updateBooking(requestId, { status: 'cancelled', decline_reason: reason || undefined }, session?.access_token);
+      setPendingRequests((prev) => prev?.filter((req) => req?.id !== requestId) ?? []);
+    } catch {
+      // keep request in list on error
+    }
   };
 
   const handleEditAvailability = () => {
@@ -177,11 +219,32 @@ const ProviderDashboardAndManagement = () => {
 
             {/* Pending Requests */}
             <section className="mb-8 md:mb-12">
-              <h2 className="text-xl md:text-2xl font-semibold text-foreground mb-4 md:mb-6">
-                Pending Requests
-              </h2>
+              <div className="flex items-center justify-between gap-4 mb-4 md:mb-6">
+                <h2 className="text-xl md:text-2xl font-semibold text-foreground">
+                  Pending Requests
+                </h2>
+                <button
+                  type="button"
+                  onClick={() => fetchPendingRequests()}
+                  disabled={pendingRequestsLoading}
+                  className="px-4 py-2 rounded-lg border border-stone-200 bg-white text-sm font-medium text-foreground hover:bg-stone-50 disabled:opacity-50"
+                >
+                  {pendingRequestsLoading ? 'Loading…' : 'Refresh'}
+                </button>
+              </div>
               <div className="space-y-4">
-                {pendingRequests?.length > 0 ?
+                {providerNotLinked && (
+                  <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 md:p-6 text-amber-800">
+                    <p className="font-medium">Your provider account isn’t linked.</p>
+                    <p className="text-sm mt-1">In Supabase, run the script that links your login (Tasnim@gmail.com) to the provider “Tasnim Beg MD”. See <code className="bg-amber-100/80 px-1 rounded">supabase/seed_provider_tasnim_beg.sql</code>.
+                    </p>
+                  </div>
+                )}
+                {pendingRequestsLoading ? (
+                  <div className="bg-card rounded-2xl p-8 md:p-12 text-center shadow-organic">
+                    <p className="text-muted-foreground">Loading requests…</p>
+                  </div>
+                ) : pendingRequests?.length > 0 ? (
                 pendingRequests?.map((request) =>
                 <RequestCard
                   key={request?.id}
@@ -189,7 +252,7 @@ const ProviderDashboardAndManagement = () => {
                   onAccept={handleAcceptRequest}
                   onDecline={handleDeclineRequest} />
 
-                ) :
+                ) : (
 
                 <div className="bg-card rounded-2xl p-8 md:p-12 text-center shadow-organic">
                     <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
@@ -199,7 +262,7 @@ const ProviderDashboardAndManagement = () => {
                     </div>
                     <p className="text-base md:text-lg text-muted-foreground">No pending requests at the moment</p>
                   </div>
-                }
+                )}
               </div>
             </section>
 

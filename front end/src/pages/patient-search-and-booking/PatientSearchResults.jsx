@@ -5,6 +5,8 @@ import ProviderCard from './components/ProviderCard';
 import ProviderModal from './components/ProviderModal';
 import BookingPanel from './components/BookingPanel';
 import Icon from '../../components/AppIcon';
+import { createBooking } from '../../api/carebnb';
+import { supabase } from '../../lib/supabase';
 
 const CARE_TYPE_LABELS = {
   'cold-flu': 'Cold/Flu Care',
@@ -42,6 +44,20 @@ const PatientSearchResults = () => {
 
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [showBookingPanel, setShowBookingPanel] = useState(false);
+  const [pendingBooking, setPendingBooking] = useState(null);
+  const [bookingError, setBookingError] = useState(null);
+  const [bookingSuccess, setBookingSuccess] = useState(false);
+
+  function buildWhen(dateStr, timeStr) {
+    if (!dateStr || !timeStr) return null;
+    const match = timeStr.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+    if (!match) return `${dateStr}T12:00:00`;
+    let h = parseInt(match[1], 10);
+    const m = match[2];
+    if (match[3].toUpperCase() === 'PM' && h !== 12) h += 12;
+    if (match[3].toUpperCase() === 'AM' && h === 12) h = 0;
+    return `${dateStr}T${String(h).padStart(2, '0')}:${m}:00`;
+  }
 
   if (!location.state || state.providers === undefined) {
     navigate('/patient-search-and-booking', { replace: true });
@@ -51,12 +67,39 @@ const PatientSearchResults = () => {
   const handleProviderClick = (provider) => setSelectedProvider(provider);
   const handleCloseModal = () => setSelectedProvider(null);
   const handleBookAppointment = (bookingData) => {
-    console.log('Booking data:', bookingData);
+    const { provider, date, time } = bookingData || {};
+    if (!provider?.id || !date || !time) return;
+    const when = buildWhen(date, time);
+    if (!when) return;
+    setPendingBooking({ providerId: provider.id, service: 'nursing', when });
     setSelectedProvider(null);
+    setBookingError(null);
+    setBookingSuccess(false);
     setShowBookingPanel(true);
   };
-  const handleIntakeSubmit = (intakeData) => {
-    console.log('Intake data:', intakeData);
+  const handleIntakeSubmit = async (intakeData) => {
+    if (!pendingBooking) return;
+    setBookingError(null);
+    try {
+      const { data: { session } } = supabase ? await supabase.auth.getSession() : { data: { session: null } };
+      const keywords = intakeData?.keywords;
+      await createBooking(
+        {
+          providerId: pendingBooking.providerId,
+          service: pendingBooking.service,
+          when: pendingBooking.when,
+          intake_keywords: Array.isArray(keywords) ? keywords : (keywords != null ? [String(keywords)] : undefined),
+          intake_transcript: intakeData?.transcript != null ? String(intakeData.transcript) : undefined,
+          intake_session_id: intakeData?.sessionId != null ? String(intakeData.sessionId) : undefined,
+        },
+        session?.access_token
+      );
+      setBookingSuccess(true);
+      setPendingBooking(null);
+      setShowBookingPanel(false);
+    } catch (err) {
+      setBookingError(err?.message || 'Failed to submit booking');
+    }
   };
 
   const careTypeLabel = searchParams?.careType ? (CARE_TYPE_LABELS[searchParams.careType] || searchParams.careType.replace(/-/g, ' ')) : null;
@@ -162,7 +205,13 @@ const PatientSearchResults = () => {
         </div>
 
         {showBookingPanel && (
-          <BookingPanel onSubmit={handleIntakeSubmit} />
+          <BookingPanel
+            pendingBooking={pendingBooking}
+            onSubmit={handleIntakeSubmit}
+            onClose={() => { setShowBookingPanel(false); setPendingBooking(null); setBookingError(null); }}
+            bookingError={bookingError}
+            bookingSuccess={bookingSuccess}
+          />
         )}
       </main>
 

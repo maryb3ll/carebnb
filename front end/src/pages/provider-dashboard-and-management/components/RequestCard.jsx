@@ -7,8 +7,7 @@ import Select from '../../../components/ui/Select';
 const RequestCard = ({ request, onAccept, onDecline }) => {
   const [showDeclineModal, setShowDeclineModal] = useState(false);
   const [declineReason, setDeclineReason] = useState('');
-  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
-  const [showTranscript, setShowTranscript] = useState(false);
+  const [showTranscript, setShowTranscript] = useState(Boolean(request?.transcript));
 
   const declineReasons = [
     { value: 'schedule_conflict', label: 'Schedule conflict' },
@@ -24,11 +23,6 @@ const RequestCard = ({ request, onAccept, onDecline }) => {
       setShowDeclineModal(false);
       setDeclineReason('');
     }
-  };
-
-  const handlePlayAudio = () => {
-    setIsPlayingAudio(!isPlayingAudio);
-    setTimeout(() => setIsPlayingAudio(false), 3000);
   };
 
   return (
@@ -64,32 +58,36 @@ const RequestCard = ({ request, onAccept, onDecline }) => {
           </div>
 
           {request?.hasAudioIntake && (
-            <div className="flex flex-wrap gap-2">
-              <Button 
-                variant="outline" 
-                size="sm"
-                iconName={isPlayingAudio ? "Pause" : "Play"}
-                iconPosition="left"
-                onClick={handlePlayAudio}
-              >
-                {isPlayingAudio ? 'Playing...' : 'Play Audio'}
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm"
-                iconName="FileText"
-                iconPosition="left"
-                onClick={() => setShowTranscript(!showTranscript)}
-              >
-                {showTranscript ? 'Hide' : 'View'} Transcript
-              </Button>
-            </div>
-          )}
-
-          {showTranscript && request?.transcript && (
-            <div className="bg-muted rounded-xl p-4 text-sm text-foreground">
-              <p className="font-medium mb-2">Patient Intake Transcript:</p>
-              <p className="text-muted-foreground leading-relaxed">{request?.transcript}</p>
+            <div className="space-y-3">
+              <p className="text-sm font-semibold text-foreground">Patient AI intake</p>
+              <div className="flex flex-wrap gap-2">
+                {request?.hasTranscript !== false && (
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    iconName="FileText"
+                    iconPosition="left"
+                    onClick={() => setShowTranscript(!showTranscript)}
+                  >
+                    {showTranscript ? 'Hide' : 'View'} transcript
+                  </Button>
+                )}
+              </div>
+              {request?.keywords?.length > 0 && (
+                <div className="bg-muted/60 rounded-xl p-3 text-sm">
+                  <p className="font-medium text-foreground mb-1.5">Keywords</p>
+                  <p className="text-muted-foreground">{request.keywords.join(', ')}</p>
+                </div>
+              )}
+              {showTranscript && request?.transcript && (
+                <div className="bg-muted rounded-xl p-4 text-sm text-foreground">
+                  <p className="font-medium mb-2">Transcript</p>
+                  <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">{request.transcript}</p>
+                </div>
+              )}
+              {showTranscript && !request?.transcript && request?.keywords?.length === 0 && (
+                <p className="text-sm text-muted-foreground">No transcript or keywords for this request.</p>
+              )}
             </div>
           )}
 

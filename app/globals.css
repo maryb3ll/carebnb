@@ -51,6 +51,86 @@ body > main {
   }
 }
 
+/* Home page animations */
+@keyframes home-title-line {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes home-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes home-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.animate-home-title-line {
+  opacity: 0;
+  animation: home-title-line 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.animate-home-fade-in-up {
+  opacity: 0;
+  animation: home-fade-in-up 0.6s ease-out forwards;
+}
+.animate-home-fade-in {
+  opacity: 0;
+  animation: home-fade-in 0.5s ease-out forwards;
+}
+.animate-home-delay-1 { animation-delay: 0.1s; }
+.animate-home-delay-2 { animation-delay: 0.2s; }
+.animate-home-delay-3 { animation-delay: 0.3s; }
+.animate-home-delay-4 { animation-delay: 0.4s; }
+.animate-home-delay-05 { animation-delay: 0.35s; }
+
+/* Animated gradient text for hero title */
+@keyframes home-title-gradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+.home-title-gradient {
+  display: inline-block;
+  background: linear-gradient(
+    90deg,
+    #1c1917 0%,
+    #78716c 20%,
+    #FF385C 40%,
+    #fb923c 50%,
+    #FF385C 60%,
+    #78716c 80%,
+    #1c1917 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: home-title-gradient 3.5s ease-in-out infinite;
+}
+.home-title-gradient span {
+  -webkit-text-fill-color: inherit;
+  color: inherit;
+}
+
 @layer utilities {
   .scrollbar-hide {
     -ms-overflow-style: none;

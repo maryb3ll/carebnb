@@ -4,42 +4,50 @@ import Icon from '../AppIcon';
 import HeaderAuth from '../HeaderAuth';
 import { supabase } from '../../lib/supabase';
 
+const API_BASE = import.meta.env.VITE_API_BASE ?? '';
+
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [currentRole, setCurrentRole] = useState('patient');
   const [user, setUser] = useState(null);
+  const [me, setMe] = useState(null); // { providerId, patientId } from /api/me
 
-  const isPatientView = location?.pathname === '/' || location?.pathname === '/bookings' || location?.pathname === '/request-care' || location?.pathname === '/profile' || (location?.pathname?.startsWith && location.pathname.startsWith('/patient-search-and-booking'));
+  const isProvider = !!me?.providerId;
   const isProviderView = location?.pathname === '/provider-dashboard-and-management';
+  const isPatientView = !isProviderView;
 
   useEffect(() => {
     if (!supabase) return;
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session?.access_token) fetchMe(session.access_token);
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      setMe(null);
+      if (session?.access_token) fetchMe(session.access_token);
     });
     return () => subscription?.unsubscribe();
   }, []);
 
-  const handleRoleToggle = () => {
-    if (isPatientView) {
-      setCurrentRole('provider');
-      navigate('/provider-dashboard-and-management');
-    } else {
-      setCurrentRole('patient');
-      navigate('/patient-search-and-booking');
+  async function fetchMe(accessToken) {
+    try {
+      const res = await fetch(`${API_BASE}/api/me`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const data = await res.json().catch(() => ({}));
+      setMe({ providerId: data.providerId ?? null, patientId: data.patientId ?? null });
+    } catch {
+      setMe({ providerId: null, patientId: null });
     }
-  };
+  }
 
   const handleLogoClick = () => {
     if (!user) {
-      navigate('/');
+      window.location.href = '/';
       return;
     }
-    if (isProviderView) {
+    if (isProvider) {
       navigate('/provider-dashboard-and-management');
     } else {
       navigate('/patient-search-and-booking');
@@ -59,14 +67,11 @@ const Header = () => {
           </div>
         </div>
 
-        {isPatientView && (
+        {user && (
           <div className="flex-1 flex justify-center min-w-0">
-            <span className="text-xs sm:text-sm font-semibold text-primary uppercase tracking-wide">Patient page</span>
-          </div>
-        )}
-        {isProviderView && (
-          <div className="flex-1 flex justify-center min-w-0">
-            <span className="text-xs sm:text-sm font-semibold text-primary uppercase tracking-wide">Provider page</span>
+            <span className="text-xs sm:text-sm font-semibold text-primary uppercase tracking-wide">
+              {isProvider ? 'Provider' : 'Patient'}
+            </span>
           </div>
         )}
 
@@ -78,38 +83,39 @@ const Header = () => {
           >
             Home
           </button>
-          <button
-            type="button"
-            onClick={() => navigate('/bookings')}
-            className="px-2.5 py-1.5 rounded-lg text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors"
-          >
-            My bookings
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate('/request-care')}
-            className="px-2.5 py-1.5 rounded-lg text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors"
-          >
-            Request care
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate('/profile')}
-            className="px-2.5 py-1.5 rounded-lg text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors"
-          >
-            My profile
-          </button>
-          <div
-            className="role-toggle inline-flex"
-            onClick={handleRoleToggle}
-            role="button"
-            tabIndex={0}
-            onKeyPress={(e) => e?.key === 'Enter' && handleRoleToggle()}
-            aria-label={isPatientView ? 'Switch to Provider View' : 'Switch to Patient View'}
-          >
-            <Icon name={isPatientView ? 'Stethoscope' : 'User'} size={16} className="role-toggle-icon" strokeWidth={2} />
-            <span className="role-toggle-text">{isPatientView ? 'Switch to provider' : 'Switch to Patient'}</span>
-          </div>
+          {isProvider ? (
+            <button
+              type="button"
+              onClick={() => navigate('/provider-dashboard-and-management')}
+              className="px-2.5 py-1.5 rounded-lg text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors"
+            >
+              Provider dashboard
+            </button>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={() => navigate('/bookings')}
+                className="px-2.5 py-1.5 rounded-lg text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors"
+              >
+                My bookings
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate('/request-care')}
+                className="px-2.5 py-1.5 rounded-lg text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors"
+              >
+                Request care
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate('/profile')}
+                className="px-2.5 py-1.5 rounded-lg text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-colors"
+              >
+                My profile
+              </button>
+            </>
+          )}
           <div className="inline-flex items-center pl-2 ml-2 border-l border-stone-100">
             <HeaderAuth />
           </div>

@@ -40,4 +40,57 @@ export async function getProviders(options = {}) {
   return { list: list.map(mapProviderFromApi), total };
 }
 
-export default { getProviders, mapProviderFromApi };
+/**
+ * Create a booking (patient). Pass Supabase session access_token for auth.
+ * @param {{ providerId: string; service: string; when: string; careRequestId?: string; intake_keywords?: string[]; intake_transcript?: string; intake_session_id?: string }} payload
+ * @param {string | null | undefined} accessToken
+ */
+export async function createBooking(payload, accessToken) {
+  const res = await fetch(`${API_BASE}/api/bookings`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+    },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.error || "Failed to create booking");
+  return data;
+}
+
+/**
+ * Fetch bookings for the logged-in provider. Pass Supabase session access_token.
+ * Returns { bookings, providerLinked } where providerLinked is false if the auth user is not linked to a provider row.
+ * @param {string | null | undefined} accessToken
+ */
+export async function getProviderBookings(accessToken) {
+  const res = await fetch(`${API_BASE}/api/bookings?for=provider`, {
+    headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.error || "Failed to fetch bookings");
+  return { bookings: data.bookings ?? [], providerLinked: data.providerLinked };
+}
+
+/**
+ * Update a booking (e.g. confirm or decline). Pass Supabase session access_token.
+ * @param {string} bookingId
+ * @param {{ status: string; decline_reason?: string }} payload
+ * @param {string | null | undefined} accessToken
+ */
+export async function updateBooking(bookingId, payload, accessToken) {
+  const res = await fetch(`${API_BASE}/api/bookings/${bookingId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+    },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.error || "Failed to update booking");
+  return data;
+}
+
+export default { getProviders, mapProviderFromApi, createBooking, getProviderBookings, updateBooking };

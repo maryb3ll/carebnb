@@ -1,0 +1,65 @@
+# Python cache and build files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+PIPFILE.lock
+
+# Virtual Environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment variables and API keys (keep .env.example only)
+.env
+.env.local
+.env.*.local
+
+# Generated output directories
+data/sessions/
+data/components/
+data/testing/
+output/
+pipeline_test_results/
+logs/
+test_results/
+test_data/
+
+# Test scripts
+test_pipeline.py
+PATH_VERIFICATION.txt
+TEST_RESULTS_LOCATION.txt
+
+# Ignore other datasets (not needed for pipeline)
+data/dataset_automated_medical_transcription/
+data/medical-speech/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Zone Identifier files (Windows)
+*:Zone.Identifier
+*.Zone.Identifier

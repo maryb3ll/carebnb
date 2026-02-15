@@ -24,7 +24,18 @@ export async function POST(request: NextRequest) {
     service,
     when,
     careRequestId,
-  } = body as { providerId?: string; service?: string; when?: string; careRequestId?: string };
+    intake_keywords,
+    intake_transcript,
+    intake_session_id,
+  } = body as {
+    providerId?: string;
+    service?: string;
+    when?: string;
+    careRequestId?: string;
+    intake_keywords?: string[];
+    intake_transcript?: string;
+    intake_session_id?: string;
+  };
 
   if (!providerId?.trim() || !service?.trim() || !when?.trim()) {
     return NextResponse.json(
@@ -42,16 +53,33 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const insertPayload: Record<string, unknown> = {
+      provider_id: providerId.trim(),
+      patient_id: resolvedPatientId,
+      care_request_id: careRequestId?.trim() || null,
+      service: service.trim(),
+      scheduled_at: scheduledAt.toISOString(),
+      status: "pending",
+    };
+    const normalizedKeywords =
+      Array.isArray(intake_keywords)
+        ? intake_keywords.filter((k): k is string => typeof k === "string").map((k) => k.trim()).filter(Boolean)
+        : typeof intake_keywords === "string" && intake_keywords.trim()
+          ? intake_keywords.split(/[\s,]+/).map((k) => k.trim()).filter(Boolean)
+          : [];
+    if (normalizedKeywords.length > 0) {
+      insertPayload.intake_keywords = normalizedKeywords;
+    }
+    const transcriptStr = typeof intake_transcript === "string" ? intake_transcript.trim() : "";
+    if (transcriptStr) {
+      insertPayload.intake_transcript = transcriptStr;
+    }
+    if (typeof intake_session_id === "string" && intake_session_id.trim()) {
+      insertPayload.intake_session_id = intake_session_id.trim();
+    }
     const { data: booking, error: insertError } = await supabase
       .from("bookings")
-      .insert({
-        provider_id: providerId.trim(),
-        patient_id: resolvedPatientId,
-        care_request_id: careRequestId?.trim() || null,
-        service: service.trim(),
-        scheduled_at: scheduledAt.toISOString(),
-        status: "pending",
-      })
+      .insert(insertPayload)
       .select("id, status, scheduled_at")
       .single();
 
@@ -95,7 +123,10 @@ export async function GET(request: NextRequest) {
   if (isProvider) {
     const providerId = accessToken ? await getProviderIdForUser(accessToken) : null;
     if (!providerId) {
-      return NextResponse.json({ bookings: [] });
+      return NextResponse.json({
+        bookings: [],
+        ...(accessToken ? { providerLinked: false } : {}),
+      });
     }
     const { data: rows, error } = await supabase
       .from("bookings")
@@ -105,14 +136,24 @@ export async function GET(request: NextRequest) {
         scheduled_at,
         status,
         patient_name,
-        patient_phone
+        patient_phone,
+        intake_keywords,
+        intake_transcript,
+        intake_session_id,
+        patient:patients!patient_id(name)
       `)
       .eq("provider_id", providerId)
       .order("scheduled_at", { ascending: false });
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
-    return NextResponse.json({ bookings: rows ?? [] });
+    const bookings = (rows ?? []).map((r: { patient?: { name?: string } | unknown[] }) => {
+      const patient = Array.isArray(r.patient) ? r.patient[0] : r.patient;
+      const patientName = (patient as { name?: string } | null)?.name ?? (r as { patient_name?: string }).patient_name ?? null;
+      const { patient: _p, ...rest } = r as Record<string, unknown>;
+      return { ...rest, patientName };
+    });
+    return NextResponse.json({ bookings, providerLinked: true });
   }
 
   const patientId = accessToken ? await getPatientIdForUser(accessToken) : null;

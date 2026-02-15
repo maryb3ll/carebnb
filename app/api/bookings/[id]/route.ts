@@ -107,8 +107,8 @@ export async function PATCH(
   if (isProvider) {
     if (newStatus === "confirmed" || newStatus === "completed") {
       updates.status = newStatus;
-    } else if (newStatus === "declined") {
-      updates.status = "declined";
+    } else if (newStatus === "declined" || newStatus === "cancelled") {
+      updates.status = "cancelled";
       if (decline_reason !== undefined) updates.decline_reason = decline_reason;
       if (referred_provider_id !== undefined) updates.referred_provider_id = referred_provider_id || null;
     }

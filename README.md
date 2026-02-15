@@ -136,6 +136,8 @@ Edit `.env.local`:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_public_key
+# Optional: AI intake pipeline (default http://localhost:5000)
+# PIPELINE_API_URL=http://localhost:5000
 ```
 
 ---
@@ -147,6 +149,10 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_public_key
 2. **Start the server**:  
    `npm run dev`
 3. Open [http://localhost:3000](http://localhost:3000). The React SPA (patient search, provider dashboard) is served at `/`; backend APIs at `/api/*`.
+
+**AI-Powered Intake (optional):** The booking flow’s “AI intake” (text or audio) calls a separate pipeline. To enable it:
+- From project root: `cd audio-model && pip install -r requirements.txt && python server.py` (see `audio-model/README.txt` for API keys).
+- The Next.js app proxies intake requests to `PIPELINE_API_URL` (default `http://localhost:5000`). Set this in `.env.local` if the pipeline runs elsewhere.
 
 - **Build for production:** `npm run build`
 - **Start production server:** `npm run start`
@@ -174,6 +180,7 @@ CareBnB/
 │   │   ├── page.tsx             # Provider dashboard (register, my jobs, find requests)
 │   │   └── [id]/page.tsx        # Provider profile
 │   └── api/
+│       ├── intake/analyze/      # POST AI intake (text or audio) → pipeline proxy
 │       ├── me/                  # GET current user + patientId/providerId
 │       ├── providers/
 │       │   ├── match/           # GET match providers by service/location
