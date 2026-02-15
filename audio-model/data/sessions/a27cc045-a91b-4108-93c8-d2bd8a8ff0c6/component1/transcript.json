@@ -1,0 +1,12 @@
+{
+  "component": 1,
+  "audio_file": "audio.webm",
+  "timestamp": "2026-02-14T23:40:37.267444",
+  "transcript": "How much makeup did you put on? I have the fevers. I have fevers and chills right now. And I'm really bad and everything hurts and my joints hurt. I don't know what to do.",
+  "metadata": {
+    "duration": 12.65999984741211,
+    "model": "whisper-1",
+    "language": "english"
+  },
+  "session_id": "a27cc045-a91b-4108-93c8-d2bd8a8ff0c6"
+}

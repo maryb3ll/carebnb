@@ -1,0 +1,26 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-15T01:06:39.256635",
+  "keywords": [
+    "soap / chart / progress notes",
+    "no appetite",
+    "slight fever",
+    "chills",
+    "sweats",
+    "hungry",
+    "tired",
+    "thirsty",
+    "lying in bed",
+    "sicknote",
+    "phrasess",
+    "febrile",
+    "sick"
+  ],
+  "description": "Patient with no appetite, slight fever, chills, and sweats.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "b9e27852-2661-4289-89d0-6f5be7d589ef"
+}

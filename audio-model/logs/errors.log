@@ -1,0 +1,12 @@
+
+## Component 4
+**Timestamp:** 2026-02-14 21:30:49
+**Error:** CoT Summarizer failed: No Component 3 sources found for session 7ade9041-a5ec-42c5-a727-7a958d2778db
+
+## Component 4
+**Timestamp:** 2026-02-14 21:32:25
+**Error:** CoT Summarizer failed: No Component 3 sources found for session d42783f1-94ac-44ad-a0e2-47b25a32f3b7
+
+## Component 3
+**Timestamp:** 2026-02-14 23:54:48
+**Error:** Medical RAG failed: No PMC articles found with full-text access. Try different keywords or check PMC availability.

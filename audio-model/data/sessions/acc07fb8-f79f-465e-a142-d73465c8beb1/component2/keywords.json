@@ -1,0 +1,20 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-14T21:24:26.491275",
+  "keywords": [
+    "soap / chart / progress notes",
+    "pain in my joints",
+    "swollen lymphatic nodes",
+    "neck",
+    "swollen",
+    "nodes",
+    "lymphatic"
+  ],
+  "description": "Pain in the lymphatic nodes.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "acc07fb8-f79f-465e-a142-d73465c8beb1"
+}

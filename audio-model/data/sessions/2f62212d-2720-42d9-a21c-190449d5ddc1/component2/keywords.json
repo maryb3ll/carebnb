@@ -1,0 +1,21 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-14T21:28:05.825060",
+  "keywords": [
+    "general medicine",
+    "high fever",
+    "lymphatic nodes",
+    "swollen",
+    "lymphatic",
+    "nodes",
+    "fever",
+    "lymph"
+  ],
+  "description": "Patient has had a high fever for five to seven days.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "2f62212d-2720-42d9-a21c-190449d5ddc1"
+}

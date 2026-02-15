@@ -1,0 +1,20 @@
+{
+  "component": 3,
+  "timestamp": "2026-02-14T21:25:54.803868",
+  "search_query": "patient care medical treatment",
+  "total_results": 10,
+  "selected_sources": [
+    7
+  ],
+  "downloaded_sources": [
+    {
+      "source_number": 1,
+      "pmid": "32587438",
+      "pmc_id": "7304112",
+      "title": "Ever-increasing diversity of drug-induced pancreatitis.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/21bd24e2-0e34-4320-876f-708ef344ecc7/component3/source_1.pdf",
+      "has_full_text": true
+    }
+  ],
+  "session_id": "21bd24e2-0e34-4320-876f-708ef344ecc7"
+}

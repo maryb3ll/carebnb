@@ -1,0 +1,29 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-14T21:34:29.328708",
+  "keywords": [
+    "soap / chart / progress notes",
+    "sore throat",
+    "no appetite",
+    "slight fever",
+    "chills",
+    "cough",
+    "lyme disease",
+    "low appetite",
+    "muscle aches",
+    "nausea",
+    "nasal congestion",
+    "headache",
+    "sweats",
+    "fever",
+    "achesNOTE",
+    ": Thesetranscribed medical transcription sample reports and examples are provided by various users andare for reference purpose only. MTHelpLine does not certify accuracy and quality of sample reports.These transcribed medical transcription sample reports may include some unique or uncommon formats;this would be due to the preference of the dictating physician. All names and dates have beenchanged (or removed) to keep confidentiality. Any resemblance of any type of name or date orplace or anything else to real world is purely incidental."
+  ],
+  "description": "Patient with fever, cough, chills, sweats, and other complaints",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "c1248e11-3b66-42ba-a391-7f4cf0c3a852"
+}

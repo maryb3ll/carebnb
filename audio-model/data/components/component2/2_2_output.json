@@ -1,0 +1,20 @@
+{
+  "iteration": 2,
+  "component": 2,
+  "source_transcript": "2_1_output.json",
+  "timestamp": "2026-02-14T20:37:49.897208",
+  "keywords": [
+    "soap / chart / progress notes",
+    "lymphatic",
+    "loss of appetite",
+    "high fever",
+    "lymphatic nodes",
+    "swollen",
+    "fever"
+  ],
+  "description": "Patient has had a high fever for five to seven days.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  }
+}

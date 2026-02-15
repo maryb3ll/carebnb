@@ -1,0 +1,21 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-14T21:28:37.873539",
+  "keywords": [
+    "soap / chart / progress notes",
+    "weakness",
+    "slight fever",
+    "lying in bed",
+    "no appetite",
+    "chills",
+    "sweatsNOTE",
+    ": Thesetranscribed medical transcription sample reports and examples are provided by various users andare for reference purpose only. MTHelpLine does not certify accuracy and quality of sample reports.These transcribed medical transcription sample reports may include some uncommon or unusual formats;this would be due to the preference of the dictating physician. All names and dates have beenchanged (or removed) to keep confidentiality. Any resemblance of any type of name or date orplace or anything else to real world is purely incidental."
+  ],
+  "description": "Patient recovering from illness.  Today had no appetite.  A slight fever.  Thirsty, lying in bed.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "e047dc20-ea95-4e91-8cf3-1c2440ec9446"
+}

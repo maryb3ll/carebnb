@@ -1,0 +1,30 @@
+{
+  "component": 3,
+  "timestamp": "2026-02-14T23:13:53.467632",
+  "search_query": "general medicine fever sore throat muscle pain fatigue",
+  "total_results": 10,
+  "selected_sources": [
+    4,
+    5,
+    10
+  ],
+  "downloaded_sources": [
+    {
+      "source_number": 2,
+      "pmid": "38034880",
+      "pmc_id": "10684905",
+      "title": "Clinical manifestations of pain in patients suffering from COVID-19 infected with Delta variant of SARS-Cov-2.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/50d2d5b0-b8e2-42b2-a84b-85c859ada3e9/component3/source_2.pdf",
+      "has_full_text": true
+    },
+    {
+      "source_number": 3,
+      "pmid": "35917440",
+      "pmc_id": "9384604",
+      "title": "Omicron-associated changes in SARS-CoV-2 symptoms in the United Kingdom.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/50d2d5b0-b8e2-42b2-a84b-85c859ada3e9/component3/source_3.pdf",
+      "has_full_text": true
+    }
+  ],
+  "session_id": "50d2d5b0-b8e2-42b2-a84b-85c859ada3e9"
+}

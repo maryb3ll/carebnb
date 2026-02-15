@@ -1,0 +1,30 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-14T23:13:21.120169",
+  "keywords": [
+    "general medicine",
+    "fever",
+    "sore throat",
+    "muscle pain",
+    "fatigue",
+    "swelling of lymph nodes",
+    "swollen lymph nodes",
+    "fatigue & muscle",
+    "lymph nodes",
+    "muscle",
+    "lymphatic",
+    "nodes",
+    "sore",
+    "throat",
+    "swollen",
+    "fatigue",
+    "lymph"
+  ],
+  "description": "A patient with fever, fatigue & muscle pain, sore throat, and swelling of lymph nodes.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "50d2d5b0-b8e2-42b2-a84b-85c859ada3e9"
+}

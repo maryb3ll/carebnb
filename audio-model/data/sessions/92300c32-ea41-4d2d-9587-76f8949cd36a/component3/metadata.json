@@ -1,0 +1,38 @@
+{
+  "component": 3,
+  "timestamp": "2026-02-14T21:10:50.226031",
+  "search_query": "sleep medicine cough fatigue chill fever",
+  "total_results": 3,
+  "selected_sources": [
+    2,
+    1,
+    3
+  ],
+  "downloaded_sources": [
+    {
+      "source_number": 1,
+      "pmid": "33036113",
+      "pmc_id": "7533684",
+      "title": "A 21-Year-Old Immunocompetent Man With Hemoptysis and Rash.",
+      "pdf_path": "/home/kitte/CareBnB/data/sessions/92300c32-ea41-4d2d-9587-76f8949cd36a/component3/source_1.pdf",
+      "has_full_text": true
+    },
+    {
+      "source_number": 2,
+      "pmid": "37983278",
+      "pmc_id": "10659202",
+      "title": "Patient experiences with SARS-CoV-2: Associations between patient experience of disease and coping profiles.",
+      "pdf_path": "/home/kitte/CareBnB/data/sessions/92300c32-ea41-4d2d-9587-76f8949cd36a/component3/source_2.pdf",
+      "has_full_text": true
+    },
+    {
+      "source_number": 3,
+      "pmid": "33810796",
+      "pmc_id": "8017509",
+      "title": "Virtualized clinical studies to assess the natural history and impact of gut microbiome modulation in non-hospitalized patients with mild to moderate COVID-19 a randomized, open-label, prospective study with a parallel group study evaluating the physiologic effects of KB109 on gut microbiota structure and function: a structured summary of a study protocol for a randomized controlled study.",
+      "pdf_path": "/home/kitte/CareBnB/data/sessions/92300c32-ea41-4d2d-9587-76f8949cd36a/component3/source_3.pdf",
+      "has_full_text": true
+    }
+  ],
+  "session_id": "92300c32-ea41-4d2d-9587-76f8949cd36a"
+}

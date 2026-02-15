@@ -1,0 +1,12 @@
+{
+  "component": 1,
+  "audio_file": "audio.m4a",
+  "timestamp": "2026-02-14T23:10:32.336127",
+  "transcript": "So I've had a high fever for five to seven days now. I feel pain in my joints, my lymphatic nodes are pretty swollen too. It doesn't, I don't really feel good most of the day. I can't get on my bed. I haven't been able to do anything.",
+  "metadata": {
+    "duration": 17.530000686645508,
+    "model": "whisper-1",
+    "language": "english"
+  },
+  "session_id": "fc640ed8-f9f0-4b33-9698-8de1c7e7982f"
+}

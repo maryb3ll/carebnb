@@ -1,0 +1,23 @@
+{
+  "iteration": 3,
+  "component": 2,
+  "source_transcript": "3_1_output.json",
+  "timestamp": "2026-02-14T20:38:47.655663",
+  "keywords": [
+    "soap / chart / progress notes",
+    "high fever",
+    "swollen lymphatic nodes",
+    "night sweats",
+    "swollen",
+    "lymphatic",
+    "fatigue",
+    "appetite",
+    "joints",
+    "feverNOTE"
+  ],
+  "description": "A patient with fever, chills, and night sweats.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  }
+}

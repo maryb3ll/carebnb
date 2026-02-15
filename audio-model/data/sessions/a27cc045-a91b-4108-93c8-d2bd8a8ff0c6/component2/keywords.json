@@ -1,0 +1,37 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-14T23:40:38.370507",
+  "keywords": [
+    "general medicine",
+    "fevers and chills",
+    "fevers",
+    "fevers and chills right now",
+    "makeup",
+    "joints hurt",
+    "hurts",
+    "chills",
+    "fever",
+    "hurts and my joints",
+    "fevers and chills",
+    "hurts and my",
+    "my joints",
+    "my hurts",
+    "transcription",
+    "chills right",
+    "joint",
+    "hurts and",
+    "right now",
+    "makeup did",
+    "my",
+    "did",
+    "on",
+    "now"
+  ],
+  "description": "Patient having fevers and chills",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "a27cc045-a91b-4108-93c8-d2bd8a8ff0c6"
+}

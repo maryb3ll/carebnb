@@ -1,0 +1,23 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-14T21:30:20.177720",
+  "keywords": [
+    "soap / chart / progress notes",
+    "high fever",
+    "pain in joints",
+    "lymphatic nodes",
+    "swollen",
+    "general medical",
+    "fever",
+    "lymphatic",
+    "nodes",
+    "swollen"
+  ],
+  "description": "Patient has had a high fever for five to seven days now.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "7ade9041-a5ec-42c5-a727-7a958d2778db"
+}

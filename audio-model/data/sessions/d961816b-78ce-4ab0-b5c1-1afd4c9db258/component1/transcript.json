@@ -1,0 +1,11 @@
+{
+  "session_id": "d961816b-78ce-4ab0-b5c1-1afd4c9db258",
+  "component": 1,
+  "timestamp": "2026-02-14T23:34:22.326354",
+  "transcript": "I have fever and chills",
+  "input_type": "text",
+  "metadata": {
+    "source": "text_input",
+    "length": 23
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "component": 1,
+  "audio_file": "audio.webm",
+  "timestamp": "2026-02-14T23:42:48.683689",
+  "transcript": "I don't think he has a problem with that. I mean, he might have something, I don't know. Whatever you're into.",
+  "metadata": {
+    "duration": 5.460000038146973,
+    "model": "whisper-1",
+    "language": "english"
+  },
+  "session_id": "818576d8-41af-4af7-b25f-e11b693226a9"
+}

@@ -1,0 +1,25 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-15T00:58:07.590799",
+  "keywords": [
+    "general medicine",
+    "body aches",
+    "fever",
+    "chills",
+    "cough",
+    "nasal congestion",
+    "runny nose",
+    "respiratory",
+    "sore throat",
+    "sneezing",
+    "symptoms",
+    "temperature"
+  ],
+  "description": "Patient with symptoms of a cold.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "fc60a3af-b6e7-4d96-93f2-3dd5dfd5280e"
+}

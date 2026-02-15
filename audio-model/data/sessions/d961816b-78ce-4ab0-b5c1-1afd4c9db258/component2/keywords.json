@@ -1,0 +1,23 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-14T23:34:26.327589",
+  "keywords": [
+    "consult - history and phy.",
+    "fever and chills",
+    "fever",
+    "chills",
+    "sore throat",
+    "runny nose",
+    "muscle aches",
+    "coronavirus",
+    "respiratory illness",
+    "infectious disease"
+  ],
+  "description": "Patient has fever and chills.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "d961816b-78ce-4ab0-b5c1-1afd4c9db258"
+}

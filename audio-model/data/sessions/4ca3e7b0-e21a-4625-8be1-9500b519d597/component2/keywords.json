@@ -1,0 +1,23 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-14T23:11:22.433765",
+  "keywords": [
+    "consult - history and phy.",
+    "extreme fatigue",
+    "painful lymphatic nodes",
+    "bad sore throat",
+    "high fever",
+    "painful",
+    "throat",
+    "fatigue",
+    "lymphatic",
+    "fever"
+  ],
+  "description": "Fever, fatigue, painful lymphatic nodes and bad sore throat",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "4ca3e7b0-e21a-4625-8be1-9500b519d597"
+}

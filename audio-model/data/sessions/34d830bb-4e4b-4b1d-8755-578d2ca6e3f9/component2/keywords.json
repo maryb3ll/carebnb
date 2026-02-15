@@ -1,0 +1,19 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-15T01:05:01.652254",
+  "keywords": [
+    "soap / chart / progress notes",
+    "general patient consult",
+    "no appetite",
+    "slight fever",
+    "chills",
+    "sweats"
+  ],
+  "description": "General patient consult.  Today the patient had no appetite, a slight fever, chills, and sweats.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "34d830bb-4e4b-4b1d-8755-578d2ca6e3f9"
+}

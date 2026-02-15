@@ -1,0 +1,24 @@
+{
+  "iteration": 5,
+  "component": 2,
+  "source_transcript": "5_1_output.json",
+  "timestamp": "2026-02-14T20:47:07.017602",
+  "keywords": [
+    "general medicine",
+    "chills",
+    "sweats",
+    "appetite",
+    "fever",
+    "lying in bed",
+    "medical transcriptions",
+    "thirstNOTE",
+    ": Thesetranscribed medical transcription sample reports may be copyrightedi.e. the original transcribed sample reports contain copyright info.Each transcribed sample report may contain some uncommon or unusual terminology.This may include some uncommon or unusual language used by the physician.Any such uncommon or unusual terminology will be due to the discretion of the physician.Specifiers of gender",
+    "age",
+    "or time may have been edited to keep confidentiality.Transcribed sample reports are provided by the users as reference material.The use of transcribed sample reports is not to be notated as final diagnosis or treatment.Any resemblance of transcribed sample reports content to real life reports is purely incidental."
+  ],
+  "description": "Patient having no appetite, slight fever, feeling thirsty, and having chills and sweats.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  }
+}

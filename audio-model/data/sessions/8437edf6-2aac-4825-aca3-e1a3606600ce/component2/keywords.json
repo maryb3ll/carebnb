@@ -1,0 +1,27 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-15T00:29:36.470345",
+  "keywords": [
+    "general medicine",
+    "dilaudid",
+    "toradol",
+    "lidocaine",
+    "alcohol",
+    "h-pylori",
+    "myofascial release",
+    "scar tissue",
+    "trigger point injections",
+    "tummy",
+    "gallbladder",
+    "heartburn",
+    "nausea",
+    "scar"
+  ],
+  "description": "Sample few lines of trigger point injection.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "8437edf6-2aac-4825-aca3-e1a3606600ce"
+}

@@ -1,0 +1,24 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-14T23:19:30.042029",
+  "keywords": [
+    "general medicine",
+    "high fever",
+    "lymphatic",
+    "swollen",
+    "swelling of lymphatic nodes",
+    "swelling",
+    "lymphatic nodes",
+    "nodes",
+    "lymphatic swelling",
+    "sheets",
+    "lymphatic node"
+  ],
+  "description": "Patient has had a high fever, swelling of lymphatic nodes, and felt pain in joints.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "6dafc048-0fa9-4ba6-9a5c-315a8195d55f"
+}

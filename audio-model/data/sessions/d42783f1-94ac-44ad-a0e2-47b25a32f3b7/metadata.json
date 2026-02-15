@@ -1,0 +1,11 @@
+{
+  "session_id": "d42783f1-94ac-44ad-a0e2-47b25a32f3b7",
+  "created_at": "2026-02-14T21:31:47.979403",
+  "status": "failed",
+  "input_type": "audio",
+  "input_format": "m4a",
+  "input_size_mb": 0.4287424087524414,
+  "updated_at": "2026-02-14T21:32:25.683358",
+  "error": "No Component 3 sources found for session d42783f1-94ac-44ad-a0e2-47b25a32f3b7",
+  "failed_at": "2026-02-14T21:32:25.683216"
+}

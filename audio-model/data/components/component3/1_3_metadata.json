@@ -1,0 +1,30 @@
+{
+  "iteration": 1,
+  "component": 3,
+  "timestamp": "2026-02-14T19:58:18.303229",
+  "search_query": "patient care medical treatment",
+  "total_results": 10,
+  "selected_sources": [
+    7,
+    2,
+    1
+  ],
+  "downloaded_sources": [
+    {
+      "source_number": 1,
+      "pmid": "32587438",
+      "pmc_id": "7304112",
+      "title": "Ever-increasing diversity of drug-induced pancreatitis.",
+      "pdf_path": "/home/kitte/CareBnB/data/components/component3/1_3_1.pdf",
+      "has_full_text": true
+    },
+    {
+      "source_number": 2,
+      "pmid": "23975331",
+      "pmc_id": "3824584",
+      "title": "Causes of medication administration errors in hospitals: a systematic review of quantitative and qualitative evidence.",
+      "pdf_path": "/home/kitte/CareBnB/data/components/component3/1_3_2.pdf",
+      "has_full_text": true
+    }
+  ]
+}

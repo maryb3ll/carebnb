@@ -1,0 +1,21 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-14T23:59:58.354399",
+  "keywords": [
+    "general medicine",
+    "no appetite",
+    "slight fever",
+    "chills",
+    "covid",
+    "medical query",
+    "telemedicine",
+    "thirst"
+  ],
+  "description": "Patient reports having no appetite, slight fever, chills, sweats, and is pretty thirsty while lying in bed.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "d697c0c4-6051-4d58-95e0-0ae3accb99af"
+}

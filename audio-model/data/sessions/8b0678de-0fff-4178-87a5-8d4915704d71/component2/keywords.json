@@ -1,0 +1,21 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-14T23:15:13.336268",
+  "keywords": [
+    "soap / chart / progress notes",
+    "high fever",
+    "pain",
+    "lymphatic nodes",
+    "swollen",
+    "nodes",
+    "lymphaticNOTE:&nbsp;Soap note is an informal term used by physicians and other health care professionals to refer to a variety of different types of progress or office note. This copy is typically discarded after the visit and is not to be considered a permanent part of the patient\u2019s record. Therefore",
+    "it may contain misspellings or other variations from standard medical language."
+  ],
+  "description": "",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "8b0678de-0fff-4178-87a5-8d4915704d71"
+}

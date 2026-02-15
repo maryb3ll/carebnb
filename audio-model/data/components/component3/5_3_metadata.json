@@ -1,0 +1,20 @@
+{
+  "iteration": 5,
+  "component": 3,
+  "timestamp": "2026-02-14T20:47:17.776958",
+  "search_query": "general medicine chills sweats appetite fever",
+  "total_results": 1,
+  "selected_sources": [
+    1
+  ],
+  "downloaded_sources": [
+    {
+      "source_number": 1,
+      "pmid": "36618218",
+      "pmc_id": "9810860",
+      "title": "The symptomatology of fever: A step towards qualitative definition of fever.",
+      "pdf_path": "/home/kitte/CareBnB/data/components/component3/5_3_1.pdf",
+      "has_full_text": true
+    }
+  ]
+}

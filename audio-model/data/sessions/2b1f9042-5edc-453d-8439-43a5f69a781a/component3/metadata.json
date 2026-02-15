@@ -1,0 +1,22 @@
+{
+  "component": 3,
+  "timestamp": "2026-02-14T21:34:14.358250",
+  "search_query": "general medicine high fever swollen joints",
+  "total_results": 6,
+  "selected_sources": [
+    2,
+    3,
+    4
+  ],
+  "downloaded_sources": [
+    {
+      "source_number": 3,
+      "pmid": "39807223",
+      "pmc_id": "11725398",
+      "title": "Macrophage Activation Syndrome/Secondary Hemophagocytic Lymphohistiocytosis in Adult-Onset Still's Disease: An Uncommon Initial Presentation in a Young Nepalese Female: A Case Report.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/2b1f9042-5edc-453d-8439-43a5f69a781a/component3/source_3.pdf",
+      "has_full_text": true
+    }
+  ],
+  "session_id": "2b1f9042-5edc-453d-8439-43a5f69a781a"
+}

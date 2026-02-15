@@ -1,0 +1,20 @@
+{
+  "component": 3,
+  "timestamp": "2026-02-14T21:34:41.172279",
+  "search_query": "sore throat no appetite slight fever chills cough",
+  "total_results": 1,
+  "selected_sources": [
+    1
+  ],
+  "downloaded_sources": [
+    {
+      "source_number": 1,
+      "pmid": "34866409",
+      "pmc_id": "8968436",
+      "title": "Clinical Features of COVID-19 Patients in the First Year of Pandemic: A Systematic Review and Meta-Analysis.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/c1248e11-3b66-42ba-a391-7f4cf0c3a852/component3/source_1.pdf",
+      "has_full_text": true
+    }
+  ],
+  "session_id": "c1248e11-3b66-42ba-a391-7f4cf0c3a852"
+}

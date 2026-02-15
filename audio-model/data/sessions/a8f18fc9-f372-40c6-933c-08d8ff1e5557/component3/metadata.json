@@ -1,0 +1,30 @@
+{
+  "component": 3,
+  "timestamp": "2026-02-15T00:15:32.196018",
+  "search_query": "patient care medical treatment",
+  "total_results": 10,
+  "selected_sources": [
+    2,
+    4,
+    10
+  ],
+  "downloaded_sources": [
+    {
+      "source_number": 1,
+      "pmid": "23975331",
+      "pmc_id": "3824584",
+      "title": "Causes of medication administration errors in hospitals: a systematic review of quantitative and qualitative evidence.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/a8f18fc9-f372-40c6-933c-08d8ff1e5557/component3/source_1.pdf",
+      "has_full_text": true
+    },
+    {
+      "source_number": 3,
+      "pmid": "31954143",
+      "pmc_id": "7035882",
+      "title": "Online patient-provider cannabis consultations.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/a8f18fc9-f372-40c6-933c-08d8ff1e5557/component3/source_3.pdf",
+      "has_full_text": true
+    }
+  ],
+  "session_id": "a8f18fc9-f372-40c6-933c-08d8ff1e5557"
+}

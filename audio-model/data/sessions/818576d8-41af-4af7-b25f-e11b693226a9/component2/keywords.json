@@ -1,0 +1,24 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-14T23:42:49.503425",
+  "keywords": [
+    "orthopedic",
+    "plantar aponeurosis",
+    "calcaneus",
+    "foot and ankle",
+    "gout",
+    "plantar fasciitis",
+    "custom foot orthotic",
+    "dorsiflexion",
+    "ankle joint",
+    "plantar",
+    "aponeurosisNOTE"
+  ],
+  "description": "Foot and ankle pain.  Pain over the plantar aponeurosis near the calcaneus.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "818576d8-41af-4af7-b25f-e11b693226a9"
+}

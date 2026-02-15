@@ -1,0 +1,10 @@
+{
+  "session_id": "67a34200-bdff-4c03-89fb-2744538fc718",
+  "created_at": "2026-02-15T00:22:34.519300",
+  "status": "failed",
+  "input_type": "text",
+  "input_length": 197,
+  "updated_at": "2026-02-15T00:22:34.522112",
+  "error": "No module named 'openai'",
+  "failed_at": "2026-02-15T00:22:34.521981"
+}

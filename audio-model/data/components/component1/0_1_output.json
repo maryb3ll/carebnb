@@ -1,0 +1,12 @@
+{
+  "iteration": 0,
+  "component": 1,
+  "audio_file": "1249120_13842059_12420758.wav",
+  "timestamp": "2026-02-14T17:19:38.126976",
+  "transcript": "I feel a sharp pain in my ankle joint when I stand.",
+  "metadata": {
+    "duration": 3.490000009536743,
+    "model": "whisper-1",
+    "language": "english"
+  }
+}

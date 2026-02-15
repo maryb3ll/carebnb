@@ -1,0 +1,38 @@
+{
+  "component": 3,
+  "timestamp": "2026-02-14T23:56:54.536039",
+  "search_query": "no appetite chills fever sleeps sweats",
+  "total_results": 3,
+  "selected_sources": [
+    1,
+    2,
+    3
+  ],
+  "downloaded_sources": [
+    {
+      "source_number": 1,
+      "pmid": "36618218",
+      "pmc_id": "9810860",
+      "title": "The symptomatology of fever: A step towards qualitative definition of fever.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/d60aa274-d572-4041-b521-6c78b92cacf7/component3/source_1.pdf",
+      "has_full_text": true
+    },
+    {
+      "source_number": 2,
+      "pmid": "33866000",
+      "pmc_id": "8049195",
+      "title": "Side effects of BNT162b2 mRNA COVID-19 vaccine: A randomized, cross-sectional study with detailed self-reported symptoms from healthcare workers.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/d60aa274-d572-4041-b521-6c78b92cacf7/component3/source_2.pdf",
+      "has_full_text": true
+    },
+    {
+      "source_number": 3,
+      "pmid": "33822361",
+      "pmc_id": "8250701",
+      "title": "Non-life-threatening adverse effects with COVID-19 mRNA-1273 vaccine: A randomized, cross-sectional study on healthcare workers with detailed self-reported symptoms.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/d60aa274-d572-4041-b521-6c78b92cacf7/component3/source_3.pdf",
+      "has_full_text": true
+    }
+  ],
+  "session_id": "d60aa274-d572-4041-b521-6c78b92cacf7"
+}

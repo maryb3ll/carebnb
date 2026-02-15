@@ -1,0 +1,30 @@
+{
+  "component": 3,
+  "timestamp": "2026-02-15T00:53:48.930273",
+  "search_query": "patient care medical treatment",
+  "total_results": 10,
+  "selected_sources": [
+    2,
+    4,
+    7
+  ],
+  "downloaded_sources": [
+    {
+      "source_number": 1,
+      "pmid": "23975331",
+      "pmc_id": "3824584",
+      "title": "Causes of medication administration errors in hospitals: a systematic review of quantitative and qualitative evidence.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/0d0d5efa-0b0e-409f-a841-03f1bb56dd47/component3/source_1.pdf",
+      "has_full_text": true
+    },
+    {
+      "source_number": 2,
+      "pmid": "14987333",
+      "pmc_id": "398419",
+      "title": "Validation of a general measure of treatment satisfaction, the Treatment Satisfaction Questionnaire for Medication (TSQM), using a national panel study of chronic disease.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/0d0d5efa-0b0e-409f-a841-03f1bb56dd47/component3/source_2.pdf",
+      "has_full_text": true
+    }
+  ],
+  "session_id": "0d0d5efa-0b0e-409f-a841-03f1bb56dd47"
+}

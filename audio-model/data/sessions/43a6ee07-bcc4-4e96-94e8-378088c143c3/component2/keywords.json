@@ -1,0 +1,24 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-14T21:35:14.205129",
+  "keywords": [
+    "consult - history and phy.",
+    "high fever",
+    "fever",
+    "lymphatic nodes",
+    "swollen",
+    "lymphatic",
+    "nodes",
+    "sore throat",
+    "malaise",
+    "lymphadenopathy",
+    "pharyngitis"
+  ],
+  "description": "Patient with sore throat, malaise, lymphadenopathy, pharyngitis.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "43a6ee07-bcc4-4e96-94e8-378088c143c3"
+}

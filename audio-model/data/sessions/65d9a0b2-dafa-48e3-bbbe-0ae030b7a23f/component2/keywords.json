@@ -1,0 +1,25 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-14T23:54:48.229496",
+  "keywords": [
+    "soap / chart / progress notes",
+    "swollen feet",
+    "fever and chills",
+    "blood",
+    "decrease",
+    "febrile",
+    "fever",
+    "chills",
+    "headache",
+    "overdose",
+    "allergicNOTE",
+    ": Thesetranscribed medical transcription sample reports and examples are provided by various users andare for reference purpose only. MTHelpLine does not certify accuracy and quality of sample reports.These transcribed medical transcription sample reports may include some uncommon or unusual formats;this would be due to the preference of the dictating physician/transcriber. All names and dates havebeen changed (or removed) to protect confidentiality. Any resemblance of any type of name or dateor place or anything else to real world is purely incidental."
+  ],
+  "description": "Patient has fever and chills and their head hurts and feet are very swollen.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "65d9a0b2-dafa-48e3-bbbe-0ae030b7a23f"
+}

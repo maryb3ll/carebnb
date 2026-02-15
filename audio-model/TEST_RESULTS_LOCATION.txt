@@ -1,0 +1,129 @@
+================================================================================
+TEST RESULTS - File Locations
+================================================================================
+
+EASY ACCESS LOCATION (Copied for convenience):
+  /home/kitte/CareBnB/audio-model/test_results/
+
+--------------------------------------------------------------------------------
+AUDIO TEST RESULTS
+--------------------------------------------------------------------------------
+
+Location: audio-model/test_results/audio_test/
+
+Files:
+  ✓ summary.pdf (19 MB)              - Main patient evaluation
+  ✓ final.zip (11 MB)                - Complete package
+  ✓ source_1_highlighted.pdf (23 KB) - Highlighted research article 1
+  ✓ source_2_highlighted.pdf (20 KB) - Highlighted research article 2
+  ✓ source_3_highlighted.pdf (24 KB) - Highlighted research article 3
+
+Full Path:
+  /home/kitte/CareBnB/audio-model/test_results/audio_test/
+
+Original Session:
+  Session ID: 43a6ee07-bcc4-4e96-94e8-378088c143c3
+  Original: data/sessions/43a6ee07-bcc4-4e96-94e8-378088c143c3/component4/
+
+--------------------------------------------------------------------------------
+TEXT TEST RESULTS
+--------------------------------------------------------------------------------
+
+Location: audio-model/test_results/text_test/
+
+Files:
+  ✓ summary.pdf (19 MB)              - Main patient evaluation
+  ✓ final.zip (11 MB)                - Complete package
+
+Note: No highlighted sources (Component 3 found 0 relevant articles)
+      This is expected and handled gracefully by the pipeline.
+
+Full Path:
+  /home/kitte/CareBnB/audio-model/test_results/text_test/
+
+Original Session:
+  Session ID: c450dfdd-fd62-4946-bb44-9f84f69cc6ef
+  Original: data/sessions/c450dfdd-fd62-4946-bb44-9f84f69cc6ef/component4/
+
+================================================================================
+HOW TO VIEW THE FILES
+================================================================================
+
+Option 1: Open Directly (Linux/Mac)
+  xdg-open test_results/audio_test/summary.pdf
+  xdg-open test_results/text_test/summary.pdf
+
+Option 2: Windows (WSL)
+  explorer.exe test_results
+
+  Or access via:
+  \\wsl$\Ubuntu\home\kitte\CareBnB\audio-model\test_results\
+
+Option 3: Extract ZIP Files
+  unzip test_results/audio_test/final.zip -d extracted_audio/
+  unzip test_results/text_test/final.zip -d extracted_text/
+
+Option 4: Copy to Desktop/Downloads
+  cp -r test_results ~/Desktop/
+  cp -r test_results ~/Downloads/
+
+================================================================================
+WHAT'S IN THE FILES
+================================================================================
+
+summary.pdf Contains:
+  ✓ Keywords - Medical terms extracted from transcript
+  ✓ Transcript Summary - Brief clinical overview
+  ✓ Patient Summary - Comprehensive analysis with clinical reasoning
+  ✓ SOAP Notes - Subjective, Objective, Assessment, Plan
+  ✓ Related Healthcare Fields - Relevant specialties
+  ✓ Diagnostic Devices - Recommended tests and equipment
+  ✓ Urgency Level - Assessment with timeframe
+
+final.zip Contains:
+  ✓ summary.pdf - Patient evaluation
+  ✓ source_*_highlighted.pdf - Research articles (if found)
+
+highlighted sources:
+  ✓ AI-selected passages highlighted in yellow
+  ✓ Relevant medical information marked throughout document
+  ✓ Educational content for healthcare providers
+
+================================================================================
+DIRECTORY STRUCTURE
+================================================================================
+
+audio-model/test_results/
+├── audio_test/
+│   ├── summary.pdf (19 MB)
+│   ├── final.zip (11 MB)
+│   ├── source_1_highlighted.pdf (23 KB)
+│   ├── source_2_highlighted.pdf (20 KB)
+│   └── source_3_highlighted.pdf (24 KB)
+└── text_test/
+    ├── summary.pdf (19 MB)
+    └── final.zip (11 MB)
+
+================================================================================
+QUICK ACCESS COMMANDS
+================================================================================
+
+# Navigate to test results
+cd audio-model/test_results
+
+# View audio test summary
+xdg-open audio_test/summary.pdf
+
+# View text test summary
+xdg-open text_test/summary.pdf
+
+# Extract audio test ZIP
+unzip audio_test/final.zip -d audio_extracted/
+
+# Extract text test ZIP
+unzip text_test/final.zip -d text_extracted/
+
+# Copy to Desktop
+cp -r . ~/Desktop/test_results/
+
+================================================================================

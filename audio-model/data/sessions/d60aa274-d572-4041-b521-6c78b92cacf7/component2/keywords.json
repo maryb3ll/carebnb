@@ -1,0 +1,27 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-14T23:56:34.780201",
+  "keywords": [
+    "soap / chart / progress notes",
+    "no appetite",
+    "chills",
+    "fever",
+    "sleeps",
+    "sweats",
+    "thirsty",
+    "lying in bed",
+    "slight fever",
+    "med",
+    "review",
+    "soap",
+    "progress",
+    "notes"
+  ],
+  "description": "Patient today with no appetite, slight fever, feels sleepy and thirsty, lying in bed.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "d60aa274-d572-4041-b521-6c78b92cacf7"
+}

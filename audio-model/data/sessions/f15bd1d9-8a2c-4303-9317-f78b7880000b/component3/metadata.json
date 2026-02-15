@@ -1,0 +1,38 @@
+{
+  "component": 3,
+  "timestamp": "2026-02-15T00:32:56.056648",
+  "search_query": "general medicine body aches chills fever sore throat",
+  "total_results": 4,
+  "selected_sources": [
+    1,
+    3,
+    4
+  ],
+  "downloaded_sources": [
+    {
+      "source_number": 1,
+      "pmid": "35308685",
+      "pmc_id": "8925989",
+      "title": "A Study of Symptomatology of COVID-19 Laboratory-Confirmed Cases at Tertiary Care Center: A Cross-Sectional Study.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/f15bd1d9-8a2c-4303-9317-f78b7880000b/component3/source_1.pdf",
+      "has_full_text": true
+    },
+    {
+      "source_number": 2,
+      "pmid": "29513698",
+      "pmc_id": "5841736",
+      "title": "Clinical and laboratory predictors of influenza infection among individuals with influenza-like illness presenting to an urban Thai hospital over a five-year period.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/f15bd1d9-8a2c-4303-9317-f78b7880000b/component3/source_2.pdf",
+      "has_full_text": true
+    },
+    {
+      "source_number": 3,
+      "pmid": "33674374",
+      "pmc_id": "7938467",
+      "title": "Description of symptom course in a telemedicine monitoring clinic for acute symptomatic COVID-19: a retrospective cohort study.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/f15bd1d9-8a2c-4303-9317-f78b7880000b/component3/source_3.pdf",
+      "has_full_text": true
+    }
+  ],
+  "session_id": "f15bd1d9-8a2c-4303-9317-f78b7880000b"
+}

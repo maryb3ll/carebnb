@@ -1,0 +1,10 @@
+{
+  "session_id": "65d9a0b2-dafa-48e3-bbbe-0ae030b7a23f",
+  "created_at": "2026-02-14T23:54:43.649458",
+  "status": "failed",
+  "input_type": "text",
+  "input_length": 67,
+  "updated_at": "2026-02-14T23:54:48.412427",
+  "error": "No PMC articles found with full-text access. Try different keywords or check PMC availability.",
+  "failed_at": "2026-02-14T23:54:48.412297"
+}

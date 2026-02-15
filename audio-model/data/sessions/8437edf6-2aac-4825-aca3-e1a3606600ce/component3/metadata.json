@@ -1,0 +1,38 @@
+{
+  "component": 3,
+  "timestamp": "2026-02-15T00:30:09.502245",
+  "search_query": "patient care medical treatment",
+  "total_results": 10,
+  "selected_sources": [
+    2,
+    4,
+    7
+  ],
+  "downloaded_sources": [
+    {
+      "source_number": 1,
+      "pmid": "23975331",
+      "pmc_id": "3824584",
+      "title": "Causes of medication administration errors in hospitals: a systematic review of quantitative and qualitative evidence.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/8437edf6-2aac-4825-aca3-e1a3606600ce/component3/source_1.pdf",
+      "has_full_text": true
+    },
+    {
+      "source_number": 2,
+      "pmid": "14987333",
+      "pmc_id": "398419",
+      "title": "Validation of a general measure of treatment satisfaction, the Treatment Satisfaction Questionnaire for Medication (TSQM), using a national panel study of chronic disease.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/8437edf6-2aac-4825-aca3-e1a3606600ce/component3/source_2.pdf",
+      "has_full_text": true
+    },
+    {
+      "source_number": 3,
+      "pmid": "32587438",
+      "pmc_id": "7304112",
+      "title": "Ever-increasing diversity of drug-induced pancreatitis.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/8437edf6-2aac-4825-aca3-e1a3606600ce/component3/source_3.pdf",
+      "has_full_text": true
+    }
+  ],
+  "session_id": "8437edf6-2aac-4825-aca3-e1a3606600ce"
+}

@@ -1,0 +1,22 @@
+{
+  "component": 3,
+  "timestamp": "2026-02-14T23:20:01.804573",
+  "search_query": "patient care medical treatment",
+  "total_results": 10,
+  "selected_sources": [
+    7,
+    2,
+    4
+  ],
+  "downloaded_sources": [
+    {
+      "source_number": 3,
+      "pmid": "14987333",
+      "pmc_id": "398419",
+      "title": "Validation of a general measure of treatment satisfaction, the Treatment Satisfaction Questionnaire for Medication (TSQM), using a national panel study of chronic disease.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/6dafc048-0fa9-4ba6-9a5c-315a8195d55f/component3/source_3.pdf",
+      "has_full_text": true
+    }
+  ],
+  "session_id": "6dafc048-0fa9-4ba6-9a5c-315a8195d55f"
+}

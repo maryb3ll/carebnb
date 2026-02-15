@@ -1,0 +1,11 @@
+{
+  "session_id": "d246edf8-1eb9-4725-a7a8-a8885c23593a",
+  "created_at": "2026-02-14T23:10:12.495435",
+  "status": "failed",
+  "input_type": "audio",
+  "input_format": "m4a",
+  "input_size_mb": 7.915496826171875e-05,
+  "updated_at": "2026-02-14T23:10:12.496049",
+  "error": "a bytes-like object is required, not 'str'",
+  "failed_at": "2026-02-14T23:10:12.495972"
+}

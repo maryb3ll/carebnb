@@ -1,0 +1,25 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-14T23:53:06.426914",
+  "keywords": [
+    "general medical consult",
+    "fever",
+    "chills",
+    "swollen",
+    "headache",
+    "infection",
+    "allergic",
+    "foot",
+    "hurt",
+    "hurts",
+    "reaction",
+    "sinus"
+  ],
+  "description": "Patient has fever and chills, foot is swollen, and head hurts.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "9421f122-3c80-4d7c-b405-be04c7ad5114"
+}

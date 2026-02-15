@@ -1,0 +1,32 @@
+{
+  "iteration": 0,
+  "component": 3,
+  "timestamp": "2026-02-14T18:57:40.506980",
+  "search_query": "ankle pain diagnosis treatment",
+  "total_results": 10,
+  "selected_sources": [
+    2,
+    4,
+    10
+  ],
+  "downloaded_sources": [
+    {
+      "source_number": 1,
+      "pmid": "38149942",
+      "title": "Advances in Diagnosis and Management of Lateral Ankle Instability: A Review of Current Literature.",
+      "pdf_path": "/home/kitte/CareBnB/data/components/component3/0_3_1.pdf"
+    },
+    {
+      "source_number": 2,
+      "pmid": "36430049",
+      "title": "Effectiveness of the Rehabilitation Training Combined with Maitland Mobilization for the Treatment of Chronic Ankle Instability: A Randomized Controlled Trial.",
+      "pdf_path": "/home/kitte/CareBnB/data/components/component3/0_3_2.pdf"
+    },
+    {
+      "source_number": 3,
+      "pmid": "33669979",
+      "title": "Effects of Dry Needling on Neuromuscular Control of Ankle Stabilizer Muscles and Center of Pressure Displacement in Basketball Players with Chronic Ankle Instability: A Single-Blinded Randomized Controlled Trial.",
+      "pdf_path": "/home/kitte/CareBnB/data/components/component3/0_3_3.pdf"
+    }
+  ]
+}

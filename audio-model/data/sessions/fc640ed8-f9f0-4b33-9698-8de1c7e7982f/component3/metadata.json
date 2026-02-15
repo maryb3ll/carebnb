@@ -1,0 +1,38 @@
+{
+  "component": 3,
+  "timestamp": "2026-02-14T23:11:07.927742",
+  "search_query": "patient care medical treatment",
+  "total_results": 10,
+  "selected_sources": [
+    7,
+    2,
+    3
+  ],
+  "downloaded_sources": [
+    {
+      "source_number": 1,
+      "pmid": "32587438",
+      "pmc_id": "7304112",
+      "title": "Ever-increasing diversity of drug-induced pancreatitis.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/fc640ed8-f9f0-4b33-9698-8de1c7e7982f/component3/source_1.pdf",
+      "has_full_text": true
+    },
+    {
+      "source_number": 2,
+      "pmid": "23975331",
+      "pmc_id": "3824584",
+      "title": "Causes of medication administration errors in hospitals: a systematic review of quantitative and qualitative evidence.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/fc640ed8-f9f0-4b33-9698-8de1c7e7982f/component3/source_2.pdf",
+      "has_full_text": true
+    },
+    {
+      "source_number": 3,
+      "pmid": "32796084",
+      "pmc_id": "7430327",
+      "title": "Changes in medication administration error rates associated with the introduction of electronic medication systems in hospitals: a multisite controlled before and after study.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/fc640ed8-f9f0-4b33-9698-8de1c7e7982f/component3/source_3.pdf",
+      "has_full_text": true
+    }
+  ],
+  "session_id": "fc640ed8-f9f0-4b33-9698-8de1c7e7982f"
+}

@@ -1,0 +1,23 @@
+{
+  "component": 2,
+  "source_transcript": "transcript.json",
+  "timestamp": "2026-02-14T21:25:15.737500",
+  "keywords": [
+    "general medicine",
+    "no appetite",
+    "slight fever",
+    "nausea",
+    "vomiting",
+    "stomach ache",
+    "lost my appetite",
+    "stomach",
+    "aches",
+    "fever"
+  ],
+  "description": "I'm feeling a little under the weather for the last couple of days, and I'm not quite sure if it's something I ate or if I'm coming down with something.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  },
+  "session_id": "21bd24e2-0e34-4320-876f-708ef344ecc7"
+}

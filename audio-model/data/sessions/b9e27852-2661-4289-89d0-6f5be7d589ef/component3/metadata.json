@@ -1,0 +1,30 @@
+{
+  "component": 3,
+  "timestamp": "2026-02-15T01:07:11.469589",
+  "search_query": "patient care medical treatment",
+  "total_results": 10,
+  "selected_sources": [
+    7,
+    2,
+    4
+  ],
+  "downloaded_sources": [
+    {
+      "source_number": 1,
+      "pmid": "32587438",
+      "pmc_id": "7304112",
+      "title": "Ever-increasing diversity of drug-induced pancreatitis.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/b9e27852-2661-4289-89d0-6f5be7d589ef/component3/source_1.pdf",
+      "has_full_text": true
+    },
+    {
+      "source_number": 3,
+      "pmid": "14987333",
+      "pmc_id": "398419",
+      "title": "Validation of a general measure of treatment satisfaction, the Treatment Satisfaction Questionnaire for Medication (TSQM), using a national panel study of chronic disease.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/b9e27852-2661-4289-89d0-6f5be7d589ef/component3/source_3.pdf",
+      "has_full_text": true
+    }
+  ],
+  "session_id": "b9e27852-2661-4289-89d0-6f5be7d589ef"
+}

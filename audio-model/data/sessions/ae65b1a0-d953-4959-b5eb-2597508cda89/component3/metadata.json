@@ -1,0 +1,22 @@
+{
+  "component": 3,
+  "timestamp": "2026-02-15T00:12:32.287163",
+  "search_query": "patient care medical treatment",
+  "total_results": 10,
+  "selected_sources": [
+    2,
+    7,
+    10
+  ],
+  "downloaded_sources": [
+    {
+      "source_number": 3,
+      "pmid": "31954143",
+      "pmc_id": "7035882",
+      "title": "Online patient-provider cannabis consultations.",
+      "pdf_path": "/home/kitte/CareBnB/audio-model/data/sessions/ae65b1a0-d953-4959-b5eb-2597508cda89/component3/source_3.pdf",
+      "has_full_text": true
+    }
+  ],
+  "session_id": "ae65b1a0-d953-4959-b5eb-2597508cda89"
+}

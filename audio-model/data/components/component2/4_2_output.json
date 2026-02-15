@@ -1,0 +1,29 @@
+{
+  "iteration": 4,
+  "component": 2,
+  "source_transcript": "4_1_output.json",
+  "timestamp": "2026-02-14T20:45:57.377673",
+  "keywords": [
+    "office notes",
+    "high fever",
+    "pain",
+    "lymphatic",
+    "lymphatic nodes",
+    "swollen",
+    "lymphatic nodes swollen",
+    "lymphatic nodes pretty",
+    "nodes pretty swollen",
+    "nodes",
+    "lymphatic nodes",
+    "lymphatic node",
+    "white",
+    "blood",
+    "cell",
+    "fever"
+  ],
+  "description": "Patient has been experiencing white blood cell and lymphatic node issues.",
+  "metadata": {
+    "model": "ft:gpt-4o-mini-2024-07-18:treehacks-2026::D9LsaUgB",
+    "confidence": 0.95
+  }
+}

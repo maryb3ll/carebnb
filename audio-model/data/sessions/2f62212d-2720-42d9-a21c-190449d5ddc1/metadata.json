@@ -1,0 +1,11 @@
+{
+  "session_id": "2f62212d-2720-42d9-a21c-190449d5ddc1",
+  "created_at": "2026-02-14T21:27:57.532640",
+  "status": "failed",
+  "input_type": "audio",
+  "input_format": "m4a",
+  "input_size_mb": 0.4287424087524414,
+  "updated_at": "2026-02-14T21:28:35.068151",
+  "error": "[Errno 2] No such file or directory: '/home/kitte/CareBnB/audio-model/ClaudeInfo/errors_fixes.MD'",
+  "failed_at": "2026-02-14T21:28:35.068003"
+}
