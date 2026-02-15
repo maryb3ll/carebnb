@@ -1,0 +1,6 @@
+# Ignore everything in the root directory
+/*
+
+# Except these
+!/.gitignore
+!/audio-model/
